@@ -47,7 +47,20 @@
         "he-3",
         "he-4"
       ],
-      "settings": {}
+      "custom_css": [
+        ".hero__status{display: none;}"
+      ],
+      "settings": {
+        "eyebrow": "Keyboard workshop · est. 2024",
+        "heading": "Keyboards that feel like [yours]",
+        "text": "<p>Pick a case, choose the switches you love and dress it in keycaps. We lube, assemble and type-test every build by hand.</p>",
+        "button_label": "Build your keyboard",
+        "button_link": "",
+        "button_label_2": "Shop parts",
+        "button_link_2": "",
+        "status": "Workshop open · 14 builds on the bench this week",
+        "typer_hint": "go on, type something"
+      }
     },
     "features": {
       "type": "features",
@@ -107,28 +120,31 @@
         "ca-1": {
           "type": "tile",
           "settings": {
+            "collection": "keyboards",
             "title": "Keyboards",
             "caption": "Cases, kits & ready-to-type boards",
             "note": "hot-swap · gasket mount",
-            "collection": "keyboards"
+            "link": ""
           }
         },
         "ca-2": {
           "type": "tile",
           "settings": {
+            "collection": "switches",
             "title": "Switches",
             "caption": "Linear, tactile and clicky",
             "note": "5-pin · factory lubed",
-            "collection": "switches"
+            "link": ""
           }
         },
         "ca-3": {
           "type": "tile",
           "settings": {
+            "collection": "keycaps",
             "title": "Keycaps",
             "caption": "PBT sets in calm colours",
             "note": "PBT · 1.5 mm · dye-sub",
-            "collection": "keycaps"
+            "link": ""
           }
         }
       },
@@ -137,7 +153,11 @@
         "ca-2",
         "ca-3"
       ],
-      "settings": {}
+      "settings": {
+        "eyebrow": "Parts bin",
+        "heading": "Shop by part",
+        "text": "Everything you need for a board that sounds, feels and looks right."
+      }
     },
     "builder": {
       "type": "builder-promo",
@@ -169,13 +189,29 @@
         "bu-2",
         "bu-3"
       ],
-      "settings": {}
+      "settings": {
+        "eyebrow": "Build Your Keyboard",
+        "heading": "Three parts. One board that's only yours.",
+        "text": "<p>Our builder shows your keyboard come together as you choose. We handle the soldering, lubing and testing.</p>",
+        "button_label": "Start building",
+        "button_link": "",
+        "receipt_title": "Build of the week",
+        "receipt_id": "#AX-0417",
+        "receipt_lines": "Base: Axion 65 · Sage\nSwitch: Walnut Tactile 62g\nKeycaps: Meadow PBT\nLube: Krytox 205g0\nSound: deep thock",
+        "receipt_total": "$257.00",
+        "receipt_foot": "assembled by hand · thank you"
+      }
     },
     "featured": {
       "type": "featured-collection",
       "settings": {
+        "eyebrow": "Fresh from the workshop",
+        "heading": "Staff favourites",
+        "text": "",
         "collection": "staff-picks",
-        "products_to_show": 4
+        "sticker": "our pick this month",
+        "products_to_show": 4,
+        "columns": 4
       }
     },
     "switches": {
@@ -226,7 +262,11 @@
         "sw-2",
         "sw-3"
       ],
-      "settings": {}
+      "settings": {
+        "eyebrow": "Switch guide",
+        "heading": "Not sure which switch? Listen first.",
+        "text": "The switch decides how every keystroke feels and sounds. The curve shows how hard the key pushes back as you press it."
+      }
     },
     "testimonials": {
       "type": "testimonials",
@@ -239,10 +279,10 @@
             "build": "65% · walnut tactile · meadow",
             "wpm": "94",
             "layout": "65",
-            "case_color": "#97A87A",
-            "cap_color": "#FCF9EA",
-            "mod_color": "#A8BBA3",
-            "accent_color": "#DB9558"
+            "case_color": "#97a87a",
+            "cap_color": "#fcf9ea",
+            "mod_color": "#a8bba3",
+            "accent_color": "#db9558"
           }
         },
         "te-2": {
@@ -253,10 +293,10 @@
             "build": "75% · oat linear · terracotta",
             "wpm": "118",
             "layout": "75",
-            "case_color": "#EDE5CC",
-            "cap_color": "#FFF6E8",
-            "mod_color": "#DB9558",
-            "accent_color": "#97A87A"
+            "case_color": "#ede5cc",
+            "cap_color": "#fff6e8",
+            "mod_color": "#db9558",
+            "accent_color": "#97a87a"
           }
         },
         "te-3": {
@@ -267,10 +307,10 @@
             "build": "TKL · lake clicky · olive grove",
             "wpm": "76",
             "layout": "tkl",
-            "case_color": "#6F7F5A",
-            "cap_color": "#E4EAD9",
-            "mod_color": "#97A87A",
-            "accent_color": "#DB9558"
+            "case_color": "#6f7f5a",
+            "cap_color": "#e4ead9",
+            "mod_color": "#97a87a",
+            "accent_color": "#db9558"
           }
         }
       },
@@ -279,7 +319,10 @@
         "te-2",
         "te-3"
       ],
-      "settings": {}
+      "settings": {
+        "eyebrow": "Notes from the desk",
+        "heading": "What people built, in their words"
+      }
     }
   },
   "order": [
