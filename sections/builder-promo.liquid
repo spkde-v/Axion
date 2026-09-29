@@ -1,3 +1,7 @@
+{%- liquid
+  assign receipt_lines = section.settings.receipt_lines | newline_to_br | split: '<br />'
+-%}
+
 <div class="builder-promo section">
   <div class="builder-promo__card">
     <div class="builder-promo__media">
@@ -5,6 +9,32 @@
         {{ section.settings.image | image_url: width: 1400 | image_tag: loading: 'lazy', widths: '600, 900, 1400', sizes: '(min-width: 990px) 50vw, 100vw' }}
       {%- else -%}
         <img src="{{ 'illo-builder.svg' | asset_url }}" alt="" width="900" height="640" loading="lazy">
+      {%- endif -%}
+
+      {%- if section.settings.receipt_title != blank -%}
+        <figure class="receipt" aria-label="{{ section.settings.receipt_title | escape }}">
+          <p class="receipt__head">
+            <span>{{ section.settings.receipt_title }}</span>
+            <span>{{ section.settings.receipt_id }}</span>
+          </p>
+          <dl class="receipt__lines">
+            {%- for line in receipt_lines -%}
+              {%- assign pair = line | strip | split: ':' -%}
+              {%- if pair.size > 1 -%}
+                <div>
+                  <dt>{{ pair[0] | strip }}</dt>
+                  <dd>{{ pair[1] | strip }}</dd>
+                </div>
+              {%- endif -%}
+            {%- endfor -%}
+          </dl>
+          <p class="receipt__total">
+            <span>{{ 'home.receipt_total' | t }}</span>
+            <span>{{ section.settings.receipt_total }}</span>
+          </p>
+          <span class="receipt__barcode" aria-hidden="true"></span>
+          <p class="receipt__foot">{{ section.settings.receipt_foot }}</p>
+        </figure>
       {%- endif -%}
     </div>
 
@@ -50,9 +80,120 @@
     background: var(--color-tertiary);
   }
 
-  .builder-promo__media img {
+  .builder-promo__media {
+    position: relative;
+    padding-bottom: 4rem;
+  }
+
+  .builder-promo__media > img {
     width: 100%;
     border-radius: var(--radius);
+  }
+
+  /* A paper receipt with a torn, zig-zag bottom edge. */
+  .receipt {
+    position: absolute;
+    right: -0.5rem;
+    bottom: 0;
+    width: min(17rem, 70%);
+    margin: 0;
+    padding: 1.1rem 1.1rem 1.4rem;
+    background: #fffef8;
+    color: #2f2b22;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    line-height: 1.5;
+    transform: rotate(2.5deg);
+    filter: drop-shadow(0 10px 14px rgb(47 43 34 / 0.18));
+    --zig: 8px;
+    mask:
+      conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) bottom / calc(var(--zig) * 2) var(--zig) repeat-x,
+      linear-gradient(#000 0 0) top / 100% calc(100% - var(--zig) + 1px) no-repeat;
+    transition: transform 0.3s ease;
+  }
+
+  .builder-promo__card:hover .receipt {
+    transform: rotate(1deg) translateY(-4px);
+  }
+
+  .receipt__head,
+  .receipt__total {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .receipt__head {
+    padding-bottom: 0.6rem;
+    font-weight: 700;
+  }
+
+  .receipt__lines {
+    margin: 0;
+    padding-block: 0.5rem;
+    background:
+      repeating-linear-gradient(90deg, currentColor 0 4px, transparent 4px 8px) top / 100% 1px no-repeat,
+      repeating-linear-gradient(90deg, currentColor 0 4px, transparent 4px 8px) bottom / 100% 1px no-repeat;
+  }
+
+  .receipt__lines > div {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+
+  /* Dotted leader between label and value. */
+  .receipt__lines dt {
+    display: flex;
+    flex: 1;
+    gap: 0.4rem;
+    opacity: 0.65;
+    white-space: nowrap;
+  }
+
+  .receipt__lines dt::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    align-self: flex-end;
+    margin-bottom: 0.35em;
+    background: radial-gradient(circle, currentColor 0.7px, transparent 1px) left / 4px 2px repeat-x;
+  }
+
+  .receipt__lines dd {
+    margin: 0;
+    text-align: right;
+  }
+
+  .receipt__total {
+    padding-top: 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .receipt__barcode {
+    display: block;
+    height: 2rem;
+    margin-top: 0.8rem;
+    background: repeating-linear-gradient(
+      90deg,
+      currentColor 0 2px,
+      transparent 2px 4px,
+      currentColor 4px 5px,
+      transparent 5px 8px,
+      currentColor 8px 11px,
+      transparent 11px 12px,
+      currentColor 12px 13px,
+      transparent 13px 16px
+    );
+  }
+
+  .receipt__foot {
+    margin-top: 0.5rem;
+    text-align: center;
+    opacity: 0.6;
   }
 
   .builder-promo__text {
@@ -63,18 +204,24 @@
   .steps {
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.6rem;
     margin: 2rem 0;
     padding: 0;
     list-style: none;
+    counter-reset: step;
   }
 
   .step {
     display: flex;
     align-items: flex-start;
     gap: 1rem;
-    padding: 1rem;
+    padding: 0.9rem 1rem;
     border-radius: var(--radius);
+    background: rgb(255 255 255 / 0.55);
+    transition: background-color 0.2s ease;
+  }
+
+  .step:hover {
     background: var(--color-surface);
   }
 
@@ -92,10 +239,10 @@
     height: 2.75rem;
     border-radius: 0.8rem;
     background: var(--color-background);
-    font-family: var(--font-heading--family);
-    font-weight: var(--font-heading--weight);
-    font-size: 1.1rem;
-    box-shadow: inset 0 -4px 0 var(--color-border), 0 0 0 1px var(--color-border);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 1rem;
+    box-shadow: inset 0 -4px 0 var(--color-well-strong);
   }
 
   .step:first-child .step__key {
@@ -106,6 +253,23 @@
   @media (max-width: 989px) {
     .builder-promo__card {
       grid-template-columns: 1fr;
+    }
+
+    .receipt {
+      right: 0.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .builder-promo__media {
+      padding-bottom: 0;
+    }
+
+    .receipt {
+      position: relative;
+      right: auto;
+      width: 100%;
+      margin-top: -1.5rem;
     }
   }
 {% endstylesheet %}
@@ -125,7 +289,19 @@
       "default": "<p>Our builder shows your keyboard come together as you choose. We handle the soldering, lubing and testing.</p>"
     },
     { "type": "text", "id": "button_label", "label": "t:labels.button_label", "default": "Start building" },
-    { "type": "url", "id": "button_link", "label": "t:labels.button_link" }
+    { "type": "url", "id": "button_link", "label": "t:labels.button_link" },
+    { "type": "header", "content": "t:labels.receipt" },
+    { "type": "text", "id": "receipt_title", "label": "t:labels.heading", "default": "Build of the week" },
+    { "type": "text", "id": "receipt_id", "label": "t:labels.receipt_id", "default": "#AX-0417" },
+    {
+      "type": "textarea",
+      "id": "receipt_lines",
+      "label": "t:labels.receipt_lines",
+      "info": "t:info.receipt_lines",
+      "default": "Base: Axion 65 · Sage\nSwitch: Walnut Tactile 62g\nKeycaps: Meadow PBT\nLube: Krytox 205g0\nSound: deep thock"
+    },
+    { "type": "text", "id": "receipt_total", "label": "t:labels.receipt_total", "default": "$257.00" },
+    { "type": "text", "id": "receipt_foot", "label": "t:labels.caption", "default": "assembled by hand · thank you" }
   ],
   "blocks": [
     {

@@ -262,8 +262,261 @@
     update();
   }
 
+
+  /* ---------- Key sounds (synthesised, no audio files) ---------- */
+  var SOUND_KEY = 'axion-sound';
+  var audio = null;
+  var soundOn = false;
+  try {
+    soundOn = window.localStorage.getItem(SOUND_KEY) === '1';
+  } catch (e) {}
+
+  var VOICES = {
+    linear: { body: 140, band: 850, q: 0.9, level: 0.5 },
+    tactile: { body: 170, band: 1300, q: 1.1, level: 0.5 },
+    clicky: { body: 210, band: 2400, q: 1.4, level: 0.4, click: true }
+  };
+
+  function noiseBurst(ctx, when, duration, filterType, freq, q, gainValue) {
+    var length = Math.ceil(ctx.sampleRate * duration);
+    var buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+    var data = buffer.getChannelData(0);
+    for (var i = 0; i < length; i++) data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / length, 3);
+    var src = ctx.createBufferSource();
+    src.buffer = buffer;
+    var filter = ctx.createBiquadFilter();
+    filter.type = filterType;
+    filter.frequency.value = freq;
+    filter.Q.value = q;
+    var gain = ctx.createGain();
+    gain.gain.value = gainValue;
+    src.connect(filter).connect(gain).connect(ctx.destination);
+    src.start(when);
+  }
+
+  function playKey(kind, soft) {
+    var AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    if (!audio) audio = new AudioCtx();
+    if (audio.state === 'suspended') audio.resume();
+    var v = VOICES[kind] || VOICES.tactile;
+    var t = audio.currentTime + 0.005;
+    var level = v.level * (soft ? 0.35 : 1);
+    var jitter = 0.94 + Math.random() * 0.12;
+
+    // Body: a short, low "thock" from the case and plate.
+    var osc = audio.createOscillator();
+    var body = audio.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(v.body * jitter, t);
+    osc.frequency.exponentialRampToValueAtTime(v.body * 0.6, t + 0.08);
+    body.gain.setValueAtTime(level * 0.6, t);
+    body.gain.exponentialRampToValueAtTime(0.0001, t + 0.09);
+    osc.connect(body).connect(audio.destination);
+    osc.start(t);
+    osc.stop(t + 0.1);
+
+    // Top: the keycap hitting the housing.
+    noiseBurst(audio, t, 0.045, 'bandpass', v.band * jitter, v.q, level);
+
+    // Clicky switches add a sharp click jacket snap just before bottom-out.
+    if (v.click && !soft) noiseBurst(audio, t - 0.004, 0.012, 'highpass', 4200, 0.7, level * 0.9);
+  }
+
+  function setSound(on) {
+    soundOn = on;
+    try {
+      window.localStorage.setItem(SOUND_KEY, on ? '1' : '0');
+    } catch (e) {}
+    document.querySelectorAll('[data-sound-toggle]').forEach(function (b) {
+      b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    if (on) playKey('tactile');
+  }
+
+  document.addEventListener('click', function (event) {
+    var toggle = event.target.closest('[data-sound-toggle]');
+    if (toggle) setSound(!soundOn);
+
+    var pressable = event.target.closest('[data-press-sound]');
+    if (pressable && soundOn) playKey('tactile');
+
+    var listen = event.target.closest('[data-play-switch]');
+    if (listen) {
+      var kind = listen.getAttribute('data-play-switch');
+      var card = listen.closest('[data-switch-card]');
+      // Three presses so the difference is easy to hear.
+      [0, 260, 520].forEach(function (delay) {
+        setTimeout(function () {
+          playKey(kind);
+          if (card) {
+            card.classList.add('is-playing');
+            setTimeout(function () {
+              card.classList.remove('is-playing');
+              playKey(kind, true);
+            }, 110);
+          }
+        }, delay);
+      });
+    }
+
+    var top = event.target.closest('[data-back-to-top]');
+    if (top) {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  /* ---------- Hero keyboard that reacts to real typing ---------- */
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function isTypingTarget(el) {
+    return el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName));
+  }
+
+  function normalize(code) {
+    return String(code || '').toLowerCase().replace(/(left|right)$/, '').replace(/^numpad/, '');
+  }
+
+  function charFor(code) {
+    if (/^key[a-z]$/.test(code)) return code.slice(3);
+    if (/^digit[0-9]$/.test(code)) return code.slice(5);
+    var map = { space: ' ', minus: '-', equal: '=', comma: ',', period: '.', slash: '/', semicolon: ';', quote: "'", backquote: '`', bracketleft: '[', bracketright: ']', backslash: '\\' };
+    return map[code] || '';
+  }
+
+  function initHeroKeyboard(root) {
+    if (root._typer) return;
+    root._typer = true;
+    var textEl = root.querySelector('[data-typer-text]');
+    var screen = textEl && textEl.parentElement;
+    var visible = false;
+    var userTyped = false;
+
+    function write(text) {
+      if (!textEl) return;
+      textEl.textContent = text.slice(-22);
+      screen.classList.toggle('has-text', text.length > 0);
+    }
+
+    function press(code, withChar) {
+      var keys = root.querySelectorAll('[data-k="' + code + '"]');
+      keys.forEach(function (k) {
+        k.classList.add('is-down');
+        clearTimeout(k._up);
+        k._up = setTimeout(function () {
+          k.classList.remove('is-down');
+        }, 140);
+      });
+      if (soundOn) playKey('tactile');
+      if (!withChar) return;
+      var current = textEl ? textEl.textContent : '';
+      if (code === 'backspace') write(current.slice(0, -1));
+      else if (code === 'enter' || code === 'escape') write('');
+      else write(current + charFor(code));
+    }
+
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (entries) {
+        visible = entries[0].isIntersecting;
+      }).observe(root);
+    } else {
+      visible = true;
+    }
+
+    document.addEventListener('keydown', function (event) {
+      if (!visible || event.metaKey || event.ctrlKey || event.altKey || isTypingTarget(event.target)) return;
+      var code = normalize(event.code);
+      if (code === 'slash') return;
+      if (code === 'space' && textEl && textEl.textContent.length) event.preventDefault();
+      userTyped = true;
+      press(code, !event.repeat);
+    });
+
+    root.addEventListener('click', function (event) {
+      var key = event.target.closest('[data-k]');
+      if (!key) return;
+      userTyped = true;
+      press(key.getAttribute('data-k'), true);
+    });
+
+    // A little welcome: the board types its own name once.
+    if (!reduceMotion) {
+      var word = ['keya', 'keyx', 'keyi', 'keyo', 'keyn'];
+      word.forEach(function (code, i) {
+        setTimeout(function () {
+          if (!userTyped) press(code, true);
+        }, 1100 + i * 190);
+      });
+      setTimeout(function () {
+        if (!userTyped) write('');
+      }, 4200);
+    }
+  }
+
+  /* ---------- Force curves draw themselves when scrolled into view ---------- */
+  function initCurves(scope) {
+    var cards = scope.querySelectorAll('[data-switch-card]');
+    if (!cards.length || !('IntersectionObserver' in window) || reduceMotion) return;
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-drawn');
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.4 }
+    );
+    cards.forEach(function (card) {
+      card.setAttribute('data-animate', '');
+      io.observe(card);
+    });
+  }
+
+  /* ---------- Mini keyboards drawn from block colours ---------- */
+  function initMiniBoards(scope) {
+    var boards = scope.querySelectorAll('[data-mini-board]');
+    if (!boards.length) return;
+    function draw() {
+      if (!window.AxionRender) return false;
+      boards.forEach(function (el) {
+        el.innerHTML = window.AxionRender.keyboard({
+          layout: el.getAttribute('data-layout'),
+          caseColor: el.getAttribute('data-case'),
+          alpha: el.getAttribute('data-alpha'),
+          mod: el.getAttribute('data-mod'),
+          accent: el.getAttribute('data-accent'),
+          label: ''
+        });
+      });
+      return true;
+    }
+    if (!draw()) window.addEventListener('load', draw);
+  }
+
+  /* ---------- Shortcut: "/" opens search ---------- */
+  document.addEventListener('keydown', function (event) {
+    if (event.key !== '/' || event.metaKey || event.ctrlKey || isTypingTarget(event.target)) return;
+    var input = document.querySelector('input[type="search"]');
+    event.preventDefault();
+    if (input) input.focus();
+    else window.location.href = config.routes.search || '/search';
+  });
+
+  function initDetails(scope) {
+    scope.querySelectorAll('[data-hero-keyboard]').forEach(initHeroKeyboard);
+    initCurves(scope);
+    initMiniBoards(scope);
+    scope.querySelectorAll('[data-sound-toggle]').forEach(function (b) {
+      b.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
+    });
+  }
+
   function init() {
     document.querySelectorAll('[data-product]').forEach(initProduct);
+    initDetails(document);
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
@@ -271,5 +524,6 @@
 
   document.addEventListener('shopify:section:load', function (event) {
     event.target.querySelectorAll('[data-product]').forEach(initProduct);
+    initDetails(event.target);
   });
 })();

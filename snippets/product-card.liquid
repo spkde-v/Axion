@@ -98,13 +98,13 @@
     aspect-ratio: 1;
     border-radius: var(--radius);
     background: var(--color-surface);
-    box-shadow: 0 0 0 1px var(--color-border);
+    box-shadow: var(--shadow-card);
     transition: box-shadow 0.25s ease, transform 0.25s ease;
   }
 
   .product-card:hover .product-card__media {
     transform: translateY(-3px);
-    box-shadow: 0 0 0 1px var(--color-border), var(--shadow);
+    box-shadow: var(--shadow);
   }
 
   .product-card__media > .product-card__img {

@@ -19,10 +19,14 @@
     "menu": "Меню"
   },
   "footer": {
-    "payment_methods": "Способы оплаты"
+    "payment_methods": "Способы оплаты",
+    "back_to_top": "Наверх"
   },
   "home": {
-    "hero_illustration_alt": "Кастомная механическая клавиатура, свитч и кейкапы"
+    "hero_illustration_alt": "Кастомная механическая клавиатура, свитч и кейкапы",
+    "sound": "Звук клавиш",
+    "tap_hint": "нажмите на клавиши",
+    "receipt_total": "Итого"
   },
   "newsletter": {
     "email": "Ваш email",
@@ -137,7 +141,12 @@
   "switches": {
     "feedback": "Отклик",
     "sound": "Звук",
-    "shop": "Смотреть: {{ kind }}"
+    "shop": "Смотреть: {{ kind }}",
+    "listen": "Послушать",
+    "listen_hint": "включите звук и нажмите ▶, чтобы услышать свитч",
+    "curve_label": "График силы нажатия: {{ kind }}",
+    "actuation": "Срабатывание",
+    "travel": "Ход"
   },
   "testimonials": {
     "rating": "Оценка {{ rating }} из 5"

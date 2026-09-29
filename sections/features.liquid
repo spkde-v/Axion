@@ -1,83 +1,144 @@
-<div class="features section section--tight">
-  <ul class="features__list">
+{% comment %}
+  Store promises set as a row of modifier keys. Each key can be pressed.
+{% endcomment %}
+
+<div class="modrow section section--tight">
+  <ul class="modrow__keys" role="list">
     {%- for block in section.blocks -%}
-      <li class="feature" {{ block.shopify_attributes }}>
-        <span class="feature__icon" aria-hidden="true">
-          {{ 'icon-' | append: block.settings.icon | append: '.svg' | inline_asset_content }}
-        </span>
-        <div>
-          <h3 class="h4">{{ block.settings.title }}</h3>
-          <p>{{ block.settings.text }}</p>
-        </div>
+      <li
+        class="modkey modkey--{{ block.settings.color }}"
+        style="--u: {{ block.settings.width }};"
+        {{ block.shopify_attributes }}
+      >
+        <button class="modkey__cap" type="button" data-press-sound>
+          <span class="modkey__legend mono">{{ block.settings.legend }}</span>
+          <span class="modkey__title">{{ block.settings.title }}</span>
+          <span class="modkey__text">{{ block.settings.text }}</span>
+        </button>
       </li>
     {%- endfor -%}
   </ul>
 </div>
 
 {% stylesheet %}
-  .features__list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(14rem, 100%), 1fr));
-    gap: 0.75rem;
-    padding: 0;
+  .modrow__keys {
+    display: flex;
+    gap: 0.6rem;
+    padding: 0.6rem;
+    border-radius: calc(var(--radius) + 0.6rem);
+    background: var(--color-well);
     list-style: none;
   }
 
-  .feature {
+  .modkey {
+    flex: var(--u) 1 0;
+    min-width: 0;
+    --cap: var(--color-surface);
+    --cap-side: var(--color-well-strong);
+  }
+
+  .modkey--accent {
+    --cap: var(--color-accent);
+    --cap-side: var(--color-accent-dark);
+  }
+
+  .modkey--olive {
+    --cap: var(--color-tertiary);
+    --cap-side: var(--color-secondary);
+  }
+
+  .modkey__cap {
     display: flex;
-    gap: 1rem;
-    padding: 1.25rem;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    min-height: 8.5rem;
+    padding: 0.85rem 1.1rem 1.1rem;
     border-radius: var(--radius);
-    background: var(--color-surface);
-    box-shadow: 0 0 0 1px var(--color-border);
+    background: var(--cap);
+    box-shadow: inset 0 -6px 0 var(--cap-side), 0 2px 3px rgb(0 0 0 / 0.08);
+    text-align: left;
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
   }
 
-  .feature p {
-    margin-top: 0.2rem;
-    font-size: 0.9rem;
-    color: var(--color-muted);
+  .modkey__cap:hover {
+    transform: translateY(1px);
   }
 
-  .feature__icon {
-    display: grid;
-    place-items: center;
-    flex: none;
-    width: 2.75rem;
-    height: 2.75rem;
-    border-radius: var(--radius-sm);
-    background: var(--color-secondary-soft);
+  .modkey__cap:active,
+  .modkey__cap.is-down {
+    transform: translateY(4px);
+    box-shadow: inset 0 -2px 0 var(--cap-side), 0 1px 1px rgb(0 0 0 / 0.08);
   }
 
-  .feature__icon svg {
-    width: 1.4rem;
+  .modkey__legend {
+    margin-bottom: auto;
+    padding-bottom: 1.25rem;
+    font-size: 0.75rem;
+    opacity: 0.7;
+  }
+
+  .modkey__title {
+    font-weight: 600;
+    line-height: 1.3;
+  }
+
+  .modkey__text {
+    margin-top: 0.15rem;
+    font-size: 0.85rem;
+    opacity: 0.72;
+    line-height: 1.4;
+  }
+
+  @media (max-width: 749px) {
+    .modrow__keys {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .modkey__cap {
+      min-height: 7.5rem;
+    }
   }
 {% endstylesheet %}
 
 {% schema %}
 {
   "name": "t:general.features",
-  "max_blocks": 4,
+  "max_blocks": 5,
   "settings": [],
   "blocks": [
     {
       "type": "feature",
       "name": "t:general.feature",
       "settings": [
+        { "type": "text", "id": "legend", "label": "t:labels.legend", "default": "Tab" },
+        { "type": "text", "id": "title", "label": "t:labels.heading", "default": "Ships in 3–5 days" },
+        { "type": "text", "id": "text", "label": "t:labels.text", "default": "Free on builds over $150." },
         {
           "type": "select",
-          "id": "icon",
-          "label": "t:labels.icon",
+          "id": "width",
+          "label": "t:labels.key_width",
           "options": [
-            { "value": "truck", "label": "Truck" },
-            { "value": "shield", "label": "Shield" },
-            { "value": "wrench", "label": "Wrench" },
-            { "value": "keyboard", "label": "Keyboard" },
-            { "value": "heart", "label": "Heart" }
+            { "value": "1", "label": "1u" },
+            { "value": "1.25", "label": "1.25u" },
+            { "value": "1.5", "label": "1.5u" },
+            { "value": "1.75", "label": "1.75u" },
+            { "value": "2.25", "label": "2.25u" }
           ],
-          "default": "truck"
+          "default": "1.5"
         },
-        { "type": "text", "id": "title", "label": "t:labels.heading", "default": "Fast shipping" },
-        { "type": "text", "id": "text", "label": "t:labels.text", "default": "Builds ship in 3–5 days." }
+        {
+          "type": "select",
+          "id": "color",
+          "label": "t:labels.color",
+          "options": [
+            { "value": "cream", "label": "Cream" },
+            { "value": "olive", "label": "Sage" },
+            { "value": "accent", "label": "Caramel" }
+          ],
+          "default": "cream"
+        }
       ]
     }
   ],
@@ -85,10 +146,10 @@
     {
       "name": "t:general.features",
       "blocks": [
-        { "type": "feature", "settings": { "icon": "wrench", "title": "Assembled by hand", "text": "Lubed, tuned and tested before it ships." } },
-        { "type": "feature", "settings": { "icon": "truck", "title": "Ships in 3–5 days", "text": "Free on builds over $150." } },
-        { "type": "feature", "settings": { "icon": "shield", "title": "2-year warranty", "text": "On every keyboard we assemble." } },
-        { "type": "feature", "settings": { "icon": "heart", "title": "30-day returns", "text": "Didn't click with you? Send it back." } }
+        { "type": "feature", "settings": { "legend": "Esc", "title": "30-day returns", "text": "Didn't click? Send it back.", "width": "1.25", "color": "accent" } },
+        { "type": "feature", "settings": { "legend": "Tab", "title": "Ships in 3–5 days", "text": "Free on builds over $150.", "width": "1.5", "color": "cream" } },
+        { "type": "feature", "settings": { "legend": "Shift", "title": "2-year warranty", "text": "On every board we assemble.", "width": "2.25", "color": "olive" } },
+        { "type": "feature", "settings": { "legend": "Enter ↵", "title": "Lubed & tested by hand", "text": "Every switch, every stab.", "width": "2.25", "color": "cream" } }
       ]
     }
   ]

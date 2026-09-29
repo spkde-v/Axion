@@ -16,13 +16,55 @@
     "switches": {
       "type": "switch-guide",
       "blocks": {
-        "linear": { "type": "switch", "settings": { "kind": "linear", "label": "Linear", "title": "Smooth all the way down", "text": "No bump, no click. Quiet, fast and great for gaming.", "feedback": 1, "sound": 2 } },
-        "tactile": { "type": "switch", "settings": { "kind": "tactile", "label": "Tactile", "title": "A gentle bump you can feel", "text": "A soft bump tells you the key registered. Loved by writers.", "feedback": 4, "sound": 3 } },
-        "clicky": { "type": "switch", "settings": { "kind": "clicky", "label": "Clicky", "title": "Crisp, loud and satisfying", "text": "Bump plus an audible click. Old-school typewriter energy.", "feedback": 5, "sound": 5 } }
+        "sw-1": {
+          "type": "switch",
+          "settings": {
+            "kind": "linear",
+            "label": "Linear",
+            "title": "Smooth all the way down",
+            "text": "No bump, no click. Quiet, fast and great for gaming.",
+            "force": "45 gf",
+            "travel": "4.0 mm",
+            "sound_word": "thock"
+          }
+        },
+        "sw-2": {
+          "type": "switch",
+          "settings": {
+            "kind": "tactile",
+            "label": "Tactile",
+            "title": "A gentle bump you can feel",
+            "text": "A soft bump tells you the key registered. Loved by writers.",
+            "force": "62 gf",
+            "travel": "4.0 mm",
+            "sound_word": "thud"
+          }
+        },
+        "sw-3": {
+          "type": "switch",
+          "settings": {
+            "kind": "clicky",
+            "label": "Clicky",
+            "title": "Crisp, loud and satisfying",
+            "text": "Bump plus an audible click. Old-school typewriter energy.",
+            "force": "55 gf",
+            "travel": "3.8 mm",
+            "sound_word": "click"
+          }
+        }
       },
-      "block_order": ["linear", "tactile", "clicky"],
-      "settings": { "heading": "Still deciding on switches?" }
+      "block_order": [
+        "sw-1",
+        "sw-2",
+        "sw-3"
+      ],
+      "settings": {
+        "heading": "Still deciding on switches?"
+      }
     }
   },
-  "order": ["main", "switches"]
+  "order": [
+    "main",
+    "switches"
+  ]
 }

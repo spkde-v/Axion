@@ -34,6 +34,8 @@
     --color-foreground: {{ fg }};
     --color-muted: {{ fg | color_mix: bg, 62 }};
     --color-border: {{ fg | color_mix: bg, 14 }};
+    --color-well: {{ fg | color_mix: bg, 6 }};
+    --color-well-strong: {{ fg | color_mix: bg, 11 }};
     --color-accent: {{ accent }};
     --color-accent-dark: {{ accent | color_darken: 14 }};
     --color-accent-soft: {{ accent | color_mix: bg, 22 }};
@@ -48,5 +50,6 @@
     --shadow-sm: 0 1px 2px {{ fg | color_modify: 'alpha', 0.06 }};
     --shadow: 0 2px 4px {{ fg | color_modify: 'alpha', 0.04 }}, 0 12px 28px -8px {{ fg | color_modify: 'alpha', 0.14 }};
     --shadow-key: inset 0 -3px 0 {{ fg | color_modify: 'alpha', 0.16 }};
+    --shadow-card: 0 1px 2px {{ fg | color_modify: 'alpha', 0.04 }}, 0 10px 30px -14px {{ fg | color_modify: 'alpha', 0.2 }};
   }
 {% endstyle %}

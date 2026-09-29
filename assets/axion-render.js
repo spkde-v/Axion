@@ -45,6 +45,47 @@
     ]
   };
 
+  // Key legends per layout row (gaps excluded). Each label maps to a
+  // KeyboardEvent.code-like name so pages can light keys as people type.
+  var ROW_65 = [
+    'Esc 1 2 3 4 5 6 7 8 9 0 - = Bksp Del',
+    'Tab Q W E R T Y U I O P [ ] \\ PgUp',
+    "Caps A S D F G H J K L ; ' Enter PgDn",
+    'Shift Z X C V B N M , . / Shift ↑ End',
+    'Ctrl Win Alt Space Alt Fn Ctrl ← ↓ →'
+  ];
+  var LEGENDS = {
+    '60': [
+      'Esc 1 2 3 4 5 6 7 8 9 0 - = Bksp',
+      'Tab Q W E R T Y U I O P [ ] \\',
+      "Caps A S D F G H J K L ; ' Enter",
+      'Shift Z X C V B N M , . / Shift',
+      'Ctrl Win Alt Space Alt Fn Menu Ctrl'
+    ],
+    '65': ROW_65,
+    '75': ['Esc F1 F2 F3 F4 F5 F6 F7 F8 F9 F10 F11 F12 Del', 'gap', '` 1 2 3 4 5 6 7 8 9 0 - = Bksp Home'].concat(ROW_65.slice(1))
+  };
+
+  var CODES = {
+    Esc: 'escape', '`': 'backquote', '-': 'minus', '=': 'equal', Bksp: 'backspace', Tab: 'tab', '[': 'bracketleft',
+    ']': 'bracketright', '\\': 'backslash', Caps: 'capslock', ';': 'semicolon', "'": 'quote', Enter: 'enter',
+    Shift: 'shift', ',': 'comma', '.': 'period', '/': 'slash', Ctrl: 'control', Win: 'meta', Alt: 'alt', Space: 'space',
+    Fn: 'fn', Menu: 'contextmenu', Del: 'delete', Home: 'home', PgUp: 'pageup', PgDn: 'pagedown', End: 'end',
+    '←': 'arrowleft', '→': 'arrowright', '↑': 'arrowup', '↓': 'arrowdown'
+  };
+
+  function codeFor(label) {
+    if (/^[A-Z]$/.test(label)) return 'key' + label.toLowerCase();
+    if (/^[0-9]$/.test(label)) return 'digit' + label;
+    if (/^F[0-9]+$/.test(label)) return label.toLowerCase();
+    return CODES[label] || label.toLowerCase();
+  }
+
+  /** Normalises a KeyboardEvent.code to the names used in data-k attributes. */
+  function normalizeCode(code) {
+    return String(code || '').toLowerCase().replace(/(left|right)$/, '').replace(/^numpad/, '');
+  }
+
   var DEFAULTS = {
     layout: '65',
     caseColor: '#97A87A',
@@ -117,17 +158,23 @@
     var rows = parseRows(o.layout);
     var colors = { a: o.alpha, m: o.mod, x: o.accent };
 
+    var legendRows = LEGENDS[o.layout] || null;
     var keys = [];
     var y = 0;
     var maxX = 0;
-    rows.forEach(function (row) {
+    rows.forEach(function (row, rowIndex) {
       if (row === 'gap') {
         y += U * 0.25;
         return;
       }
+      var labels = legendRows && legendRows[rowIndex] ? legendRows[rowIndex].split(' ') : [];
       var x = 0;
+      var i = 0;
       row.forEach(function (k) {
-        if (!k.gap) keys.push({ x: x, y: y, w: k.width * U, role: k.role });
+        if (!k.gap) {
+          var label = labels[i++] || '';
+          keys.push({ x: x, y: y, w: k.width * U, role: k.role, label: label });
+        }
         x += k.width * U;
       });
       maxX = Math.max(maxX, x);
@@ -176,6 +223,7 @@
       var ky = PAD + k.y + 2.5;
       var kw = k.w - 5;
       var kh = U - 5;
+      out.push('<g class="kb-key"' + (k.label ? ' data-k="' + codeFor(k.label) + '"' : '') + '>');
       out.push(
         '<rect x="' + kx + '" y="' + ky + '" width="' + kw + '" height="' + kh + '" rx="9" fill="' + shade(c, 0.16) + '"/>'
       );
@@ -203,7 +251,14 @@
             shade(c, 0.22) +
             '"/>'
         );
+      } else if (o.legends && k.label) {
+        var text = k.label.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+        out.push(
+          '<text x="' + (kx + 11) + '" y="' + (ky + 17) + '" font-size="' + (text.length > 2 ? 9 : 11) +
+            '" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="' + shade(c, 0.55) + '">' + text + '</text>'
+        );
       }
+      out.push('</g>');
     });
 
     out.push('</svg>');
@@ -262,7 +317,7 @@
     ].join('');
   }
 
-  var api = { keyboard: keyboard, keySwitch: keySwitch, keycaps: keycaps, shade: shade, isColor: isColor, layouts: Object.keys(LAYOUTS), defaults: DEFAULTS };
+  var api = { normalizeCode: normalizeCode, keyboard: keyboard, keySwitch: keySwitch, keycaps: keycaps, shade: shade, isColor: isColor, layouts: Object.keys(LAYOUTS), defaults: DEFAULTS };
 
   if (typeof module === 'object' && module.exports) {
     module.exports = api;

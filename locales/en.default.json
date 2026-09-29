@@ -19,10 +19,14 @@
     "menu": "Menu"
   },
   "footer": {
-    "payment_methods": "Payment methods"
+    "payment_methods": "Payment methods",
+    "back_to_top": "Back to top"
   },
   "home": {
-    "hero_illustration_alt": "A custom mechanical keyboard with a loose switch and keycaps"
+    "hero_illustration_alt": "A custom mechanical keyboard with a loose switch and keycaps",
+    "sound": "Key sounds",
+    "tap_hint": "tap the keys",
+    "receipt_total": "Total"
   },
   "newsletter": {
     "email": "Your email",
@@ -135,7 +139,12 @@
   "switches": {
     "feedback": "Feedback",
     "sound": "Sound",
-    "shop": "Shop {{ kind }}"
+    "shop": "Shop {{ kind }}",
+    "listen": "Listen",
+    "listen_hint": "sound on? press ▶ to hear each switch",
+    "curve_label": "Force curve of a {{ kind }} switch",
+    "actuation": "Actuation",
+    "travel": "Travel"
   },
   "testimonials": {
     "rating": "Rated {{ rating }} out of 5"

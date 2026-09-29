@@ -79,8 +79,9 @@
         </a>
       {%- endif -%}
 
-      <a class="header__icon" href="{{ routes.search_url }}" aria-label="{{ 'search.title' | t }}">
+      <a class="header__icon header__icon--tip" href="{{ routes.search_url }}" aria-label="{{ 'search.title' | t }}">
         {{ 'icon-search.svg' | inline_asset_content }}
+        <span class="header__tip" aria-hidden="true">{{ 'search.title' | t }} <kbd>/</kbd></span>
       </a>
 
       {%- if shop.customer_accounts_enabled -%}
@@ -129,7 +130,7 @@
     padding: 0.5rem 0.6rem 0.5rem 1.1rem;
     border-radius: var(--radius-lg);
     background: var(--color-surface);
-    box-shadow: 0 0 0 1px var(--color-border), var(--shadow-sm);
+    box-shadow: var(--shadow-sm);
   }
 
   .header__nav {
@@ -187,7 +188,7 @@
     list-style: none;
     border-radius: var(--radius);
     background: var(--color-surface);
-    box-shadow: 0 0 0 1px var(--color-border), var(--shadow);
+    box-shadow: var(--shadow);
   }
 
   .header__submenu a {
@@ -240,6 +241,32 @@
     height: 1.5rem;
   }
 
+  .header__tip {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 50%;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.6rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-foreground);
+    color: var(--color-background);
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+
+  .header__icon--tip:hover .header__tip,
+  .header__icon--tip:focus-visible .header__tip {
+    opacity: 1;
+    transform: translate(-50%, 0);
+    transition-delay: 0.3s;
+  }
+
   .cart-count {
     position: absolute;
     top: 0.1rem;
@@ -285,7 +312,7 @@
     padding: 1rem;
     border-radius: var(--radius-lg);
     background: var(--color-surface);
-    box-shadow: 0 0 0 1px var(--color-border), var(--shadow);
+    box-shadow: var(--shadow);
     animation: drawer-in 0.25s ease;
   }
 

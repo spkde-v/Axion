@@ -12,42 +12,160 @@
     "hero": {
       "type": "hero",
       "blocks": {
-        "stat-1": { "type": "stat", "settings": { "value": "40+", "label": "switches tested" } },
-        "stat-2": { "type": "stat", "settings": { "value": "3 steps", "label": "to your own board" } },
-        "stat-3": { "type": "stat", "settings": { "value": "2 yr", "label": "build warranty" } }
+        "he-1": {
+          "type": "stat",
+          "settings": {
+            "value": "40+",
+            "label": "switches tested"
+          }
+        },
+        "he-2": {
+          "type": "stat",
+          "settings": {
+            "value": "~3,200",
+            "label": "keys lubed a week"
+          }
+        },
+        "he-3": {
+          "type": "stat",
+          "settings": {
+            "value": "4.0 mm",
+            "label": "of travel, every key"
+          }
+        },
+        "he-4": {
+          "type": "stat",
+          "settings": {
+            "value": "2 yr",
+            "label": "build warranty"
+          }
+        }
       },
-      "block_order": ["stat-1", "stat-2", "stat-3"],
+      "block_order": [
+        "he-1",
+        "he-2",
+        "he-3",
+        "he-4"
+      ],
       "settings": {}
     },
     "features": {
       "type": "features",
       "blocks": {
-        "f-1": { "type": "feature", "settings": { "icon": "wrench", "title": "Assembled by hand", "text": "Lubed, tuned and tested before it ships." } },
-        "f-2": { "type": "feature", "settings": { "icon": "truck", "title": "Ships in 3–5 days", "text": "Free on builds over $150." } },
-        "f-3": { "type": "feature", "settings": { "icon": "shield", "title": "2-year warranty", "text": "On every keyboard we assemble." } },
-        "f-4": { "type": "feature", "settings": { "icon": "heart", "title": "30-day returns", "text": "Didn't click with you? Send it back." } }
+        "fe-1": {
+          "type": "feature",
+          "settings": {
+            "legend": "Esc",
+            "title": "30-day returns",
+            "text": "Didn't click? Send it back.",
+            "width": "1.25",
+            "color": "accent"
+          }
+        },
+        "fe-2": {
+          "type": "feature",
+          "settings": {
+            "legend": "Tab",
+            "title": "Ships in 3–5 days",
+            "text": "Free on builds over $150.",
+            "width": "1.5",
+            "color": "cream"
+          }
+        },
+        "fe-3": {
+          "type": "feature",
+          "settings": {
+            "legend": "Shift",
+            "title": "2-year warranty",
+            "text": "On every board we assemble.",
+            "width": "2.25",
+            "color": "olive"
+          }
+        },
+        "fe-4": {
+          "type": "feature",
+          "settings": {
+            "legend": "Enter ↵",
+            "title": "Lubed & tested by hand",
+            "text": "Every switch, every stab.",
+            "width": "2.25",
+            "color": "cream"
+          }
+        }
       },
-      "block_order": ["f-1", "f-2", "f-3", "f-4"],
+      "block_order": [
+        "fe-1",
+        "fe-2",
+        "fe-3",
+        "fe-4"
+      ],
       "settings": {}
     },
     "categories": {
       "type": "category-tiles",
       "blocks": {
-        "t-1": { "type": "tile", "settings": { "title": "Keyboards", "caption": "Cases, kits & ready-to-type boards" } },
-        "t-2": { "type": "tile", "settings": { "title": "Switches", "caption": "Linear, tactile and clicky" } },
-        "t-3": { "type": "tile", "settings": { "title": "Keycaps", "caption": "PBT sets in calm colours" } }
+        "ca-1": {
+          "type": "tile",
+          "settings": {
+            "title": "Keyboards",
+            "caption": "Cases, kits & ready-to-type boards",
+            "note": "hot-swap · gasket mount"
+          }
+        },
+        "ca-2": {
+          "type": "tile",
+          "settings": {
+            "title": "Switches",
+            "caption": "Linear, tactile and clicky",
+            "note": "5-pin · factory lubed"
+          }
+        },
+        "ca-3": {
+          "type": "tile",
+          "settings": {
+            "title": "Keycaps",
+            "caption": "PBT sets in calm colours",
+            "note": "PBT · 1.5 mm · dye-sub"
+          }
+        }
       },
-      "block_order": ["t-1", "t-2", "t-3"],
+      "block_order": [
+        "ca-1",
+        "ca-2",
+        "ca-3"
+      ],
       "settings": {}
     },
     "builder": {
       "type": "builder-promo",
       "blocks": {
-        "s-1": { "type": "step", "settings": { "title": "Pick a base", "text": "60%, 65%, 75% or TKL — in a case colour you like." } },
-        "s-2": { "type": "step", "settings": { "title": "Choose your switches", "text": "Smooth linears, bumpy tactiles or crisp clickies." } },
-        "s-3": { "type": "step", "settings": { "title": "Dress it in keycaps", "text": "See the colours on your board before you buy." } }
+        "bu-1": {
+          "type": "step",
+          "settings": {
+            "title": "Pick a base",
+            "text": "60%, 65%, 75% or TKL — in a case colour you like."
+          }
+        },
+        "bu-2": {
+          "type": "step",
+          "settings": {
+            "title": "Choose your switches",
+            "text": "Smooth linears, bumpy tactiles or crisp clickies."
+          }
+        },
+        "bu-3": {
+          "type": "step",
+          "settings": {
+            "title": "Dress it in keycaps",
+            "text": "See the colours on your board before you buy."
+          }
+        }
       },
-      "block_order": ["s-1", "s-2", "s-3"],
+      "block_order": [
+        "bu-1",
+        "bu-2",
+        "bu-3"
+      ],
       "settings": {}
     },
     "featured": {
@@ -57,23 +175,111 @@
     "switches": {
       "type": "switch-guide",
       "blocks": {
-        "linear": { "type": "switch", "settings": { "kind": "linear", "label": "Linear", "title": "Smooth all the way down", "text": "No bump, no click. Quiet, fast and great for gaming.", "feedback": 1, "sound": 2 } },
-        "tactile": { "type": "switch", "settings": { "kind": "tactile", "label": "Tactile", "title": "A gentle bump you can feel", "text": "A soft bump tells you the key registered. Loved by writers.", "feedback": 4, "sound": 3 } },
-        "clicky": { "type": "switch", "settings": { "kind": "clicky", "label": "Clicky", "title": "Crisp, loud and satisfying", "text": "Bump plus an audible click. Old-school typewriter energy.", "feedback": 5, "sound": 5 } }
+        "sw-1": {
+          "type": "switch",
+          "settings": {
+            "kind": "linear",
+            "label": "Linear",
+            "title": "Smooth all the way down",
+            "text": "No bump, no click. Quiet, fast and great for gaming.",
+            "force": "45 gf",
+            "travel": "4.0 mm",
+            "sound_word": "thock"
+          }
+        },
+        "sw-2": {
+          "type": "switch",
+          "settings": {
+            "kind": "tactile",
+            "label": "Tactile",
+            "title": "A gentle bump you can feel",
+            "text": "A soft bump tells you the key registered. Loved by writers.",
+            "force": "62 gf",
+            "travel": "4.0 mm",
+            "sound_word": "thud"
+          }
+        },
+        "sw-3": {
+          "type": "switch",
+          "settings": {
+            "kind": "clicky",
+            "label": "Clicky",
+            "title": "Crisp, loud and satisfying",
+            "text": "Bump plus an audible click. Old-school typewriter energy.",
+            "force": "55 gf",
+            "travel": "3.8 mm",
+            "sound_word": "click"
+          }
+        }
       },
-      "block_order": ["linear", "tactile", "clicky"],
+      "block_order": [
+        "sw-1",
+        "sw-2",
+        "sw-3"
+      ],
       "settings": {}
     },
     "testimonials": {
       "type": "testimonials",
       "blocks": {
-        "q-1": { "type": "quote", "settings": { "quote": "I'd never built a keyboard before. Seeing the colours on the preview sold me — and it arrived exactly like that.", "author": "Mira K.", "build": "65% · Tactile · Sage caps", "rating": 5 } },
-        "q-2": { "type": "quote", "settings": { "quote": "Switches came perfectly lubed. The thock is unreal for the price.", "author": "Daniel R.", "build": "75% · Linear · Cream caps", "rating": 5 } },
-        "q-3": { "type": "quote", "settings": { "quote": "Helpful people, calm packaging, zero plastic junk. My desk finally feels finished.", "author": "Sasha T.", "build": "TKL · Clicky", "rating": 4 } }
+        "te-1": {
+          "type": "quote",
+          "settings": {
+            "quote": "I'd never built a keyboard before. The preview showed exactly the colours that turned up at my door.",
+            "author": "Mira K.",
+            "build": "65% · walnut tactile · meadow",
+            "wpm": "94",
+            "layout": "65",
+            "case_color": "#97A87A",
+            "cap_color": "#FCF9EA",
+            "mod_color": "#A8BBA3",
+            "accent_color": "#DB9558"
+          }
+        },
+        "te-2": {
+          "type": "quote",
+          "settings": {
+            "quote": "Switches came perfectly lubed. The thock is unreal for the price, my flatmate hates it.",
+            "author": "Daniel R.",
+            "build": "75% · oat linear · terracotta",
+            "wpm": "118",
+            "layout": "75",
+            "case_color": "#EDE5CC",
+            "cap_color": "#FFF6E8",
+            "mod_color": "#DB9558",
+            "accent_color": "#97A87A"
+          }
+        },
+        "te-3": {
+          "type": "quote",
+          "settings": {
+            "quote": "Calm packaging, a handwritten note, zero plastic junk. My desk finally feels finished.",
+            "author": "Sasha T.",
+            "build": "TKL · lake clicky · olive grove",
+            "wpm": "76",
+            "layout": "tkl",
+            "case_color": "#6F7F5A",
+            "cap_color": "#E4EAD9",
+            "mod_color": "#97A87A",
+            "accent_color": "#DB9558"
+          }
+        }
       },
-      "block_order": ["q-1", "q-2", "q-3"],
+      "block_order": [
+        "te-1",
+        "te-2",
+        "te-3"
+      ],
       "settings": {}
     }
   },
-  "order": ["hero", "features", "categories", "builder", "featured", "switches", "testimonials"]
+  "order": [
+    "hero",
+    "features",
+    "categories",
+    "builder",
+    "featured",
+    "switches",
+    "testimonials"
+  ]
 }

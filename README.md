@@ -31,6 +31,15 @@ Setup:
 Until collections are connected, the builder runs in demo mode with sample parts (checkout disabled).
 Selections are kept in the URL (`?base=…&switch=…&caps=…`), so a build can be shared as a link.
 
+## Small details
+
+- **Hero keyboard** reacts to real typing: keys sink on the illustration and the text shows up in a little screen. It types "axion" once on load. Tap keys on touch devices.
+- **Key sounds** are synthesised with Web Audio (no files). Off by default; the speaker key turns them on and remembers the choice.
+- **Switch guide** draws a force curve for each switch type and has a *Listen* button.
+- **Keycap words**: wrap a word of the hero heading in `[brackets]` to set it in keycaps.
+- Label-maker tapes for section labels, a "build of the week" receipt, pinned customer notes with a drawing of their board, a modifier-key row for store promises.
+- Press <kbd>/</kbd> anywhere to search.
+
 ## Sections
 
 Home: `hero`, `features`, `category-tiles`, `builder-promo`, `featured-collection`, `switch-guide`, `testimonials`.

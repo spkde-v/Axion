@@ -1,10 +1,42 @@
+{%- liquid
+  # Words wrapped in [brackets] are set in keycaps, e.g. "Keyboards that feel like [yours]".
+  assign heading = section.settings.heading
+  assign before = heading
+  assign cap_word = ''
+  assign after = ''
+  if heading contains '[' and heading contains ']'
+    assign parts = heading | split: '['
+    assign before = parts[0]
+    assign rest = parts[1] | split: ']'
+    assign cap_word = rest[0]
+    assign after = rest[1]
+  endif
+  assign use_illustration = true
+  if section.settings.image
+    assign use_illustration = false
+  endif
+-%}
+
 <div class="hero section section--tight">
   <div class="hero__card">
     <div class="hero__content">
       {%- if section.settings.eyebrow != blank -%}
         <p class="eyebrow">{{ section.settings.eyebrow }}</p>
       {%- endif -%}
-      <h1 class="hero__title">{{ section.settings.heading }}</h1>
+
+      <h1 class="hero__title">
+        {{- before -}}
+        {%- if cap_word != blank -%}
+          <span class="keycaps" aria-label="{{ cap_word | escape }}">
+            {%- assign letters = cap_word | split: '' -%}
+            {%- for letter in letters -%}
+              <span class="keycaps__cap" aria-hidden="true" style="--i: {{ forloop.index0 }};">{{ letter }}</span>
+            {%- endfor -%}
+          </span>
+        {%- endif -%}
+        {{- after -}}
+      </h1>
+
       {%- if section.settings.text != blank -%}
         <div class="hero__text">{{ section.settings.text }}</div>
       {%- endif -%}
@@ -23,18 +55,30 @@
         {%- endif -%}
       </div>
 
-      <ul class="hero__stats">
-        {%- for block in section.blocks -%}
-          <li {{ block.shopify_attributes }}>
-            <strong>{{ block.settings.value }}</strong>
-            <span>{{ block.settings.label }}</span>
-          </li>
-        {%- endfor -%}
-      </ul>
+      {%- if section.settings.status != blank -%}
+        <p class="hero__status">
+          <span class="hero__status-dot" aria-hidden="true"></span>
+          {{ section.settings.status }}
+        </p>
+      {%- endif -%}
     </div>
 
-    <div class="hero__media">
-      {%- if section.settings.image -%}
+    <div class="hero__media"{% if use_illustration %} data-hero-keyboard{% endif %}>
+      {%- if use_illustration -%}
+        <div class="hero__illo">{{ 'illo-hero.svg' | inline_asset_content }}</div>
+
+        <div class="typer">
+          <p class="typer__screen" aria-hidden="true">
+            <span class="typer__text" data-typer-text></span><span class="typer__caret"></span>
+            <span class="typer__placeholder" data-touch="{{ 'home.tap_hint' | t }}">{{ section.settings.typer_hint }}</span>
+          </p>
+          <button class="typer__sound" type="button" data-sound-toggle aria-pressed="false">
+            <span class="icon-on">{{ 'icon-sound.svg' | inline_asset_content }}</span>
+            <span class="icon-off">{{ 'icon-mute.svg' | inline_asset_content }}</span>
+            <span class="visually-hidden">{{ 'home.sound' | t }}</span>
+          </button>
+        </div>
+      {%- else -%}
         {{
           section.settings.image
           | image_url: width: 1600
@@ -44,40 +88,109 @@
             fetchpriority: 'high',
             class: 'hero__image'
         }}
-      {%- else -%}
-        <img
-          class="hero__illo"
-          src="{{ 'illo-hero.svg' | asset_url }}"
-          alt="{{ 'home.hero_illustration_alt' | t }}"
-          width="1000"
-          height="800"
-          fetchpriority="high"
-        >
       {%- endif -%}
     </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <dl class="hero__specs">
+        {%- for block in section.blocks -%}
+          <div {{ block.shopify_attributes }}>
+            <dt class="mono">{{ block.settings.label }}</dt>
+            <dd>{{ block.settings.value }}</dd>
+          </div>
+        {%- endfor -%}
+      </dl>
+    {%- endif -%}
   </div>
 </div>
 
 {% stylesheet %}
   .hero__card {
+    position: relative;
     display: grid;
-    grid-template-columns: 1fr 1.05fr;
+    grid-template-columns: 1fr 1.1fr;
     align-items: center;
-    gap: 2rem;
-    padding: clamp(1.75rem, 1rem + 3vw, 4rem);
+    gap: 2rem clamp(1.5rem, 1rem + 2vw, 3rem);
+    padding: clamp(1.75rem, 1rem + 3vw, 3.75rem);
     border-radius: var(--radius-lg);
     background: var(--color-surface);
-    box-shadow: 0 0 0 1px var(--color-border);
+    box-shadow: var(--shadow-card);
     overflow: hidden;
   }
 
+  /* Faint graph-paper grid on the right, like a build mat. */
+  .hero__card::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 0 48%;
+    background-image:
+      linear-gradient(var(--color-well) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-well) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(ellipse at 60% 45%, #000 20%, transparent 72%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .hero__content,
+  .hero__media,
+  .hero__specs {
+    position: relative;
+    z-index: 1;
+  }
+
   .hero__title {
-    max-width: 14ch;
+    max-width: 15ch;
+    font-size: clamp(2.4rem, 1.6rem + 3vw, 4.1rem);
+  }
+
+  .keycaps {
+    display: inline-flex;
+    gap: 0.06em;
+    margin-left: 0.08em;
+    white-space: nowrap;
+  }
+
+  .keycaps__cap {
+    display: inline-grid;
+    place-items: center;
+    min-width: 0.95em;
+    padding: 0.02em 0.1em 0.12em;
+    border-radius: 0.2em;
+    background: var(--color-background);
+    box-shadow: inset 0 -0.09em 0 var(--color-well-strong), 0 0.03em 0.05em rgb(0 0 0 / 0.08);
+    line-height: 1.05;
+    transform: rotate(calc((var(--i) - 2) * 1.4deg));
+    animation: cap-drop 0.5s cubic-bezier(0.3, 1.4, 0.5, 1) both;
+    animation-delay: calc(0.25s + var(--i) * 0.07s);
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+  }
+
+  .keycaps__cap:nth-child(3n + 1) {
+    background: var(--color-accent);
+    box-shadow: inset 0 -0.09em 0 var(--color-accent-dark);
+  }
+
+  .keycaps__cap:nth-child(3n + 2) {
+    background: var(--color-tertiary);
+    box-shadow: inset 0 -0.09em 0 var(--color-secondary);
+  }
+
+  .keycaps__cap:hover {
+    transform: translateY(0.05em) rotate(0deg);
+    box-shadow: inset 0 -0.03em 0 rgb(0 0 0 / 0.14);
+  }
+
+  @keyframes cap-drop {
+    from {
+      opacity: 0;
+      transform: translateY(-0.6em) rotate(-8deg);
+    }
   }
 
   .hero__text {
     margin-top: 1.25rem;
-    max-width: 34rem;
+    max-width: 32rem;
     font-size: 1.1rem;
     color: var(--color-muted);
   }
@@ -89,42 +202,46 @@
     margin-top: 2rem;
   }
 
-  .hero__stats {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin-top: 2.5rem;
-    padding: 0;
-    list-style: none;
-  }
-
-  .hero__stats:empty {
-    display: none;
-  }
-
-  .hero__stats li {
-    display: flex;
-    flex-direction: column;
-    padding: 0.7rem 1.1rem;
-    border-radius: var(--radius);
-    background: var(--color-background);
-    box-shadow: inset 0 0 0 1px var(--color-border);
-    line-height: 1.3;
-  }
-
-  .hero__stats strong {
-    font-family: var(--font-heading--family);
-    font-weight: var(--font-heading--weight);
-    font-size: 1.3rem;
-  }
-
-  .hero__stats span {
-    font-size: 0.8rem;
+  .hero__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1.75rem;
+    font-size: 0.875rem;
     color: var(--color-muted);
   }
 
-  .hero__media {
+  .hero__status-dot {
     position: relative;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--color-secondary);
+  }
+
+  .hero__status-dot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: inherit;
+    animation: status-pulse 2.4s ease-out infinite;
+  }
+
+  @keyframes status-pulse {
+    to {
+      opacity: 0;
+      transform: scale(3);
+    }
+  }
+
+  .hero__illo svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .hero__illo .kb-key {
+    cursor: pointer;
   }
 
   .hero__image {
@@ -134,15 +251,116 @@
     border-radius: var(--radius);
   }
 
-  .hero__illo {
-    width: 100%;
-    animation: hero-float 7s ease-in-out infinite;
+  .typer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    max-width: 26rem;
+    margin: -0.5rem auto 0;
   }
 
-  @keyframes hero-float {
+  .typer__screen {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.5rem 1rem;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: var(--color-well);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    white-space: pre;
+  }
+
+  .typer__caret {
+    width: 2px;
+    height: 1.1em;
+    margin-left: 1px;
+    background: var(--color-accent-dark);
+    animation: caret 1s steps(1) infinite;
+  }
+
+  @keyframes caret {
     50% {
-      transform: translateY(-8px);
+      opacity: 0;
     }
+  }
+
+  .typer__placeholder {
+    margin-left: 0.5rem;
+    color: var(--color-muted);
+    font-size: 0.8rem;
+  }
+
+  .typer__screen.has-text .typer__placeholder {
+    display: none;
+  }
+
+  .typer__sound {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-background);
+    box-shadow: var(--shadow-key), var(--shadow-sm);
+    transition: transform 0.08s ease, background-color 0.2s ease;
+  }
+
+  .typer__sound:active {
+    transform: translateY(2px);
+  }
+
+  .typer__sound svg {
+    width: 1.25rem;
+  }
+
+  .typer__sound .icon-on,
+  .typer__sound[aria-pressed='true'] .icon-off {
+    display: none;
+  }
+
+  .typer__sound[aria-pressed='true'] {
+    background: var(--color-accent);
+  }
+
+  .typer__sound[aria-pressed='true'] .icon-on {
+    display: block;
+  }
+
+  .hero__specs {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 0.5rem;
+    margin: 0;
+  }
+
+  .hero__specs > div {
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 0.15rem;
+    padding: 0.9rem 1.1rem;
+    border-radius: var(--radius);
+    background: var(--color-background);
+  }
+
+  .hero__specs dt {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+
+  .hero__specs dd {
+    margin: 0;
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: 1.4rem;
+    line-height: 1.2;
   }
 
   @media (max-width: 989px) {
@@ -150,8 +368,32 @@
       grid-template-columns: 1fr;
     }
 
+    .hero__card::before {
+      inset: 0 0 55% 0;
+    }
+
     .hero__media {
       order: -1;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .hero__specs {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .hero__specs dd {
+      font-size: 1.2rem;
+    }
+  }
+
+  @media (hover: none) {
+    .typer__placeholder {
+      font-size: 0;
+    }
+
+    .typer__placeholder::after {
+      content: attr(data-touch);
     }
   }
 {% endstylesheet %}
@@ -161,19 +403,27 @@
   "name": "t:general.hero",
   "max_blocks": 4,
   "settings": [
-    { "type": "image_picker", "id": "image", "label": "t:labels.image" },
-    { "type": "text", "id": "eyebrow", "label": "t:labels.eyebrow", "default": "Mechanical keyboard workshop" },
-    { "type": "text", "id": "heading", "label": "t:labels.heading", "default": "Keyboards that feel like yours" },
+    { "type": "image_picker", "id": "image", "label": "t:labels.image", "info": "t:info.hero_image" },
+    { "type": "text", "id": "eyebrow", "label": "t:labels.eyebrow", "default": "Keyboard workshop · est. 2024" },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:labels.heading",
+      "info": "t:info.hero_heading",
+      "default": "Keyboards that feel like [yours]"
+    },
     {
       "type": "richtext",
       "id": "text",
       "label": "t:labels.text",
-      "default": "<p>Pick a case, choose the switches you love and dress it in keycaps. We assemble, lube and test every build by hand.</p>"
+      "default": "<p>Pick a case, choose the switches you love and dress it in keycaps. We lube, assemble and type-test every build by hand.</p>"
     },
     { "type": "text", "id": "button_label", "label": "t:labels.button_label", "default": "Build your keyboard" },
     { "type": "url", "id": "button_link", "label": "t:labels.button_link" },
-    { "type": "text", "id": "button_label_2", "label": "t:labels.button_label_secondary", "default": "Shop all" },
-    { "type": "url", "id": "button_link_2", "label": "t:labels.button_link_secondary" }
+    { "type": "text", "id": "button_label_2", "label": "t:labels.button_label_secondary", "default": "Shop parts" },
+    { "type": "url", "id": "button_link_2", "label": "t:labels.button_link_secondary" },
+    { "type": "text", "id": "status", "label": "t:labels.status", "default": "Workshop open · 14 builds on the bench this week" },
+    { "type": "text", "id": "typer_hint", "label": "t:labels.typer_hint", "default": "go on, type something" }
   ],
   "blocks": [
     {
@@ -190,7 +440,8 @@
       "name": "t:general.hero",
       "blocks": [
         { "type": "stat", "settings": { "value": "40+", "label": "switches tested" } },
-        { "type": "stat", "settings": { "value": "3 steps", "label": "to your own board" } },
+        { "type": "stat", "settings": { "value": "~3,200", "label": "keys lubed a week" } },
+        { "type": "stat", "settings": { "value": "4.0 mm", "label": "of travel, every key" } },
         { "type": "stat", "settings": { "value": "2 yr", "label": "build warranty" } }
       ]
     }

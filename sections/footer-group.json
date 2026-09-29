@@ -14,15 +14,36 @@
     "footer": {
       "type": "footer",
       "blocks": {
-        "shop": { "type": "menu", "settings": { "heading": "Shop", "menu": "main-menu" } },
-        "help": { "type": "menu", "settings": { "heading": "Help", "menu": "footer" } },
-        "newsletter": { "type": "newsletter", "settings": {} }
+        "shop": {
+          "type": "menu",
+          "settings": {
+            "heading": "Shop",
+            "menu": "main-menu"
+          }
+        },
+        "help": {
+          "type": "menu",
+          "settings": {
+            "heading": "Help",
+            "menu": "footer"
+          }
+        },
+        "workshop": {
+          "type": "info",
+          "settings": {}
+        }
       },
-      "block_order": ["shop", "help", "newsletter"],
+      "block_order": [
+        "shop",
+        "help",
+        "workshop"
+      ],
       "settings": {
         "show_payment_icons": true
       }
     }
   },
-  "order": ["footer"]
+  "order": [
+    "footer"
+  ]
 }

@@ -46,7 +46,11 @@
     "builder_keyboards": "Tag products with layout:60, layout:65, layout:75 or layout:tkl and case:#HEX to drive the preview.",
     "builder_switches": "Tag products with switch:linear, switch:tactile or switch:clicky and optionally stem:#HEX.",
     "builder_keycaps": "Tag products with cap:#HEX, mod:#HEX and accent:#HEX for alpha, modifier and accent key colours.",
-    "assembly_product": "Optional service product (e.g. \"Assembly & lubing\") offered as a checkbox."
+    "assembly_product": "Optional service product (e.g. \"Assembly & lubing\") offered as a checkbox.",
+    "hero_image": "Leave empty to use the interactive keyboard illustration.",
+    "hero_heading": "Wrap a word in [brackets] to set it in keycaps.",
+    "receipt_lines": "One line per item, written as Label: Value.",
+    "wordmark": "Defaults to the store name."
   },
   "labels": {
     "accent": "Accent",
@@ -107,7 +111,28 @@
     "text": "Text",
     "text_style": "Text style",
     "type": "Type",
-    "value": "Value"
+    "value": "Value",
+    "status": "Status line",
+    "typer_hint": "Typing hint",
+    "legend": "Key legend",
+    "key_width": "Key width",
+    "color": "Colour",
+    "spec_note": "Spec callout",
+    "receipt": "Receipt",
+    "receipt_id": "Build number",
+    "receipt_lines": "Receipt lines",
+    "receipt_total": "Receipt total",
+    "force": "Actuation force",
+    "travel": "Travel",
+    "wpm": "Typing speed (wpm)",
+    "their_build": "Their build",
+    "layout": "Layout",
+    "case_color": "Case colour",
+    "cap_color": "Alpha keycaps",
+    "mod_color": "Modifier keycaps",
+    "wordmark": "Footer wordmark",
+    "signoff": "Sign-off",
+    "sticker": "Sticker text"
   },
   "options": {
     "alignment": {
