@@ -65,7 +65,7 @@
 
     <div class="hero__media"{% if use_illustration %} data-hero-keyboard{% endif %}>
       {%- if use_illustration -%}
-        <div class="hero__illo">{{ 'illo-hero.svg' | inline_asset_content }}</div>
+        <div class="hero__illo">{%- render 'hero-illustration' -%}</div>
 
         <div class="typer">
           <p class="typer__screen" aria-hidden="true">
