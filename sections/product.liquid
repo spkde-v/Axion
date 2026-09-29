@@ -1,50 +1,477 @@
-{% comment %}
-  This section is used in the product template to render product page with
-  media, content, and add-to-cart form.
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant
+  assign featured = current_variant.featured_media | default: product.featured_media
+  assign kind = ''
+  for tag in product.tags
+    assign tag_lc = tag | downcase
+    if tag_lc contains 'switch:'
+      assign kind = 'switch'
+    elsif tag_lc contains 'layout:'
+      assign kind = 'keyboard'
+    elsif tag_lc contains 'cap:'
+      assign kind = 'keycaps'
+    endif
+  endfor
+-%}
 
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/product
-{% endcomment %}
+<div class="product section section--tight" data-product>
+  <nav class="breadcrumbs" aria-label="{{ 'general.breadcrumbs' | t }}">
+    <a href="{{ routes.root_url }}">{{ 'general.home' | t }}</a>
+    <span aria-hidden="true">/</span>
+    {%- if collection -%}
+      <a href="{{ collection.url }}">{{ collection.title }}</a>
+      <span aria-hidden="true">/</span>
+    {%- endif -%}
+    <span>{{ product.title }}</span>
+  </nav>
 
-<div class="product-images">
-  {% for image in product.images %}
-    {% render 'image', class: 'product-image', image: image %}
-  {% endfor %}
+  <div class="product__grid">
+    <div class="product__gallery">
+      <div class="product__main media" data-main-media>
+        {%- if featured -%}
+          {{
+            featured
+            | image_url: width: 1400
+            | image_tag:
+              widths: '500, 800, 1100, 1400',
+              sizes: '(min-width: 990px) 55vw, 100vw',
+              fetchpriority: 'high'
+          }}
+        {%- else -%}
+          <img class="product__illo" src="{{ 'illo-keyboard.svg' | asset_url }}" alt="" width="600" height="400">
+        {%- endif -%}
+      </div>
+
+      {%- if product.media.size > 1 -%}
+        <ul class="product__thumbs" role="list">
+          {%- for media in product.media -%}
+            {%- if media.media_type == 'image' -%}
+              <li>
+                <button
+                  type="button"
+                  class="product__thumb"
+                  data-media-thumb
+                  data-media-id="{{ media.id }}"
+                  data-src="{{ media | image_url: width: 1400 }}"
+                  data-srcset="{{ media | image_url: width: 800 }} 800w, {{ media | image_url: width: 1400 }} 1400w"
+                  data-alt="{{ media.alt | escape }}"
+                  aria-label="{{ 'products.view_image' | t: number: forloop.index }}"
+                  aria-current="{% if media.id == featured.id %}true{% else %}false{% endif %}"
+                >
+                  {{ media | image_url: width: 200, height: 200, crop: 'center' | image_tag: loading: 'lazy', alt: '' }}
+                </button>
+              </li>
+            {%- endif -%}
+          {%- endfor -%}
+        </ul>
+      {%- endif -%}
+    </div>
+
+    <div class="product__info">
+      {%- if product.vendor != blank and product.vendor != shop.name -%}
+        <p class="eyebrow">{{ product.vendor }}</p>
+      {%- endif -%}
+      <h1 class="product__title">{{ product.title }}</h1>
+
+      <div class="product__price">
+        {% render 'price', target: current_variant %}
+      </div>
+
+      {%- form 'product', product, data-product-form: '', class: 'product__form' -%}
+        <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+        {%- unless product.has_only_default_variant -%}
+          {%- for option in product.options_with_values -%}
+            {%- assign option_index = forloop.index0 -%}
+            <fieldset class="variant-picker">
+              <legend>
+                {{ option.name }}: <span>{{ option.selected_value }}</span>
+              </legend>
+              <div class="variant-picker__values">
+                {%- for value in option.values -%}
+                  <label class="swatch">
+                    <input
+                      type="radio"
+                      name="option-{{ option_index }}"
+                      value="{{ value | escape }}"
+                      {% if option.selected_value == value %}
+                        checked
+                      {% endif %}
+                    >
+                    <span>{{ value }}</span>
+                  </label>
+                {%- endfor -%}
+              </div>
+            </fieldset>
+          {%- endfor -%}
+        {%- endunless -%}
+
+        <div class="product__buy">
+          <div class="quantity">
+            <button type="button" data-qty-step="-1" aria-label="{{ 'products.decrease' | t }}">
+              {{- 'icon-minus.svg' | inline_asset_content -}}
+            </button>
+            <input type="number" name="quantity" value="1" min="1" aria-label="{{ 'products.quantity' | t }}">
+            <button type="button" data-qty-step="1" aria-label="{{ 'products.increase' | t }}">
+              {{- 'icon-plus.svg' | inline_asset_content -}}
+            </button>
+          </div>
+
+          <button class="btn btn--lg product__add" type="submit" {% unless current_variant.available %}disabled{% endunless %}>
+            {{ 'icon-cart.svg' | inline_asset_content }}
+            <span>
+              {%- if current_variant.available -%}
+                {{ 'products.add_to_cart' | t }}
+              {%- else -%}
+                {{ 'products.sold_out' | t }}
+              {%- endif -%}
+            </span>
+          </button>
+        </div>
+
+        {%- if section.settings.show_dynamic_checkout -%}
+          <div class="product__dynamic">{{ form | payment_button }}</div>
+        {%- endif -%}
+      {%- endform -%}
+
+      {%- if section.settings.show_builder_card -%}
+        <a class="builder-card" href="{{ section.settings.builder_link | default: '/pages/build' }}">
+          <span class="builder-card__icon" aria-hidden="true">{{ 'icon-keyboard.svg' | inline_asset_content }}</span>
+          <span>
+            <strong>{{ 'products.builder_title' | t }}</strong>
+            <small>
+              {%- case kind -%}
+                {%- when 'switch' -%}{{ 'products.builder_text_switch' | t }}
+                {%- when 'keycaps' -%}{{ 'products.builder_text_keycaps' | t }}
+                {%- else -%}{{ 'products.builder_text' | t }}
+              {%- endcase -%}
+            </small>
+          </span>
+          {{ 'icon-arrow.svg' | inline_asset_content }}
+        </a>
+      {%- endif -%}
+
+      {%- if product.description != blank -%}
+        <details class="accordion" open>
+          <summary>{{ 'products.description' | t }} {{ 'icon-chevron.svg' | inline_asset_content }}</summary>
+          <div class="accordion__body rte">{{ product.description }}</div>
+        </details>
+      {%- endif -%}
+
+      {%- for block in section.blocks -%}
+        <details class="accordion" {{ block.shopify_attributes }}>
+          <summary>{{ block.settings.title }} {{ 'icon-chevron.svg' | inline_asset_content }}</summary>
+          <div class="accordion__body rte">{{ block.settings.content }}</div>
+        </details>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <script type="application/json" data-product-json>
+    {
+      "title": {{ product.title | json }},
+      "options": {{ product.options | json }},
+      "variants": [
+        {%- for variant in product.variants -%}
+          {
+            "id": {{ variant.id }},
+            "options": {{ variant.options | json }},
+            "price": {{ variant.price }},
+            "compare_at_price": {{ variant.compare_at_price | default: 0 }},
+            "available": {{ variant.available | json }},
+            "featured_media": {% if variant.featured_media %}{ "id": {{ variant.featured_media.id }} }{% else %}null{% endif %}
+          }{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ]
+    }
+  </script>
 </div>
 
-<div class="product-info">
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.price | money }}</p>
-  <p>{{ product.description }}</p>
-</div>
+{% stylesheet %}
+  .product__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    align-items: start;
+    gap: clamp(1.5rem, 1rem + 3vw, 4rem);
+  }
 
-<div class="product-form">
-  {% form 'product', product %}
-    {% assign current_variant = product.selected_or_first_available_variant %}
+  .product__gallery {
+    position: sticky;
+    top: 6.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
 
-    <select name="id">
-      {% for variant in product.variants %}
-        <option
-          value="{{ variant.id }}"
-          {% if variant == current_variant %}
-            selected="selected"
-          {% endif %}
-        >
-          {{ variant.title }} - {{ variant.price | money }}
-        </option>
-      {% endfor %}
-    </select>
+  .product__main {
+    aspect-ratio: 1;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: 0 0 0 1px var(--color-border);
+  }
 
-    <input type="text" name="quantity" min="1" value="1">
+  .product__main img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 
-    <input type="submit" value="Add to cart">
-    {{ form | payment_button }}
-  {% endform %}
-</div>
+  .product__main .product__illo {
+    object-fit: contain;
+    padding: 12%;
+  }
+
+  .product__thumbs {
+    display: flex;
+    gap: 0.6rem;
+    overflow-x: auto;
+    padding: 0.25rem;
+    list-style: none;
+    scrollbar-width: none;
+  }
+
+  .product__thumb {
+    display: block;
+    width: 5rem;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    box-shadow: 0 0 0 1px var(--color-border);
+    transition: box-shadow 0.2s ease;
+  }
+
+  .product__thumb[aria-current='true'] {
+    box-shadow: 0 0 0 2px var(--color-secondary);
+  }
+
+  .product__info {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .product__title {
+    font-size: clamp(1.9rem, 1.5rem + 1.5vw, 2.75rem);
+  }
+
+  .product__price {
+    font-size: 1.35rem;
+  }
+
+  .product__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-block: 0.5rem;
+  }
+
+  .variant-picker {
+    border: 0;
+    padding: 0;
+  }
+
+  .variant-picker legend {
+    margin-bottom: 0.6rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .variant-picker legend span {
+    font-weight: 400;
+    color: var(--color-muted);
+  }
+
+  .variant-picker__values {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .swatch {
+    position: relative;
+    cursor: pointer;
+  }
+
+  .swatch input {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .swatch span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    padding: 0.4rem 1.1rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    box-shadow: inset 0 0 0 1.5px var(--color-border);
+    font-weight: 500;
+    transition: box-shadow 0.2s ease, background-color 0.2s ease;
+  }
+
+  .swatch:hover span {
+    box-shadow: inset 0 0 0 1.5px var(--color-foreground);
+  }
+
+  .swatch input:checked + span {
+    background: var(--color-secondary-soft);
+    box-shadow: inset 0 0 0 2px var(--color-secondary), inset 0 -3px 0 var(--color-secondary);
+  }
+
+  .swatch input:focus-visible + span {
+    outline: 2px solid var(--color-accent-dark);
+    outline-offset: 2px;
+  }
+
+  .swatch.is-unavailable span {
+    color: var(--color-muted);
+    text-decoration: line-through;
+  }
+
+  .product__buy {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .product__add {
+    flex: 1;
+  }
+
+  .product__dynamic .shopify-payment-button__button {
+    border-radius: var(--radius-sm);
+    min-height: 3.25rem;
+    overflow: hidden;
+  }
+
+  .builder-card {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.1rem;
+    border-radius: var(--radius);
+    background: var(--color-tertiary-soft);
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+  }
+
+  .builder-card:hover {
+    background: var(--color-tertiary);
+  }
+
+  .builder-card > span:nth-child(2) {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.35;
+  }
+
+  .builder-card small {
+    color: var(--color-muted);
+    font-size: 0.875rem;
+  }
+
+  .builder-card > svg {
+    width: 1.2rem;
+    flex: none;
+  }
+
+  .builder-card__icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--radius-sm);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-key);
+  }
+
+  .builder-card__icon svg {
+    width: 1.5rem;
+  }
+
+  .accordion {
+    border-top: 1px solid var(--color-border);
+  }
+
+  .accordion:last-child {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .accordion summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-block: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .accordion summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .accordion summary svg {
+    width: 1.1rem;
+    transition: transform 0.2s ease;
+  }
+
+  .accordion[open] summary svg {
+    transform: rotate(180deg);
+  }
+
+  .accordion__body {
+    padding-bottom: 1.25rem;
+    color: var(--color-muted);
+  }
+
+  @media (max-width: 989px) {
+    .product__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .product__gallery {
+      position: static;
+    }
+  }
+{% endstylesheet %}
 
 {% schema %}
 {
   "name": "t:general.product",
-  "settings": [],
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_dynamic_checkout",
+      "label": "t:labels.show_dynamic_checkout",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_builder_card",
+      "label": "t:labels.show_builder_card",
+      "default": true
+    },
+    {
+      "type": "url",
+      "id": "builder_link",
+      "label": "t:labels.builder_link"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "collapsible",
+      "name": "t:general.collapsible",
+      "settings": [
+        { "type": "text", "id": "title", "label": "t:labels.heading", "default": "Shipping & returns" },
+        {
+          "type": "richtext",
+          "id": "content",
+          "label": "t:labels.text",
+          "default": "<p>Ships in 3–5 business days. Free returns within 30 days.</p>"
+        }
+      ]
+    }
+  ],
   "disabled_on": {
     "groups": ["header", "footer"]
   }

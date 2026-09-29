@@ -1,0 +1,30 @@
+{% doc %}
+  Outputs a JSON array of builder options for the products of a collection.
+  Only the data the builder needs is emitted to keep the payload small.
+
+  @param {collection} collection - Collection with the products for this step
+  @param {number} [limit] - Max number of products
+{% enddoc %}
+
+{%- assign limit = limit | default: 24 -%}
+[
+{%- for product in collection.products limit: limit -%}
+  {
+    "id": {{ product.id | json }},
+    "title": {{ product.title | json }},
+    "url": {{ product.url | json }},
+    "image": {% if product.featured_image %}{{ product.featured_image | image_url: width: 600 | json }}{% else %}null{% endif %},
+    "tags": {{ product.tags | json }},
+    "variants": [
+      {%- for variant in product.variants -%}
+        {
+          "id": {{ variant.id | json }},
+          "title": {{ variant.title | json }},
+          "price": {{ variant.price | json }},
+          "available": {{ variant.available | json }}
+        }{% unless forloop.last %},{% endunless %}
+      {%- endfor -%}
+    ]
+  }{% unless forloop.last %},{% endunless %}
+{%- endfor -%}
+]

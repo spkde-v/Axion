@@ -1,18 +1,52 @@
 {% style %}
-  {% # Loads all font variantions with display: swap %}
   {{ settings.type_primary_font | font_face: font_display: 'swap' }}
   {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_face: font_display: 'swap' }}
-  {{ settings.type_primary_font | font_modify: 'weight', 'bold' | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
   {{ settings.type_primary_font | font_modify: 'style', 'italic' | font_face: font_display: 'swap' }}
+  {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+
+  {% liquid
+    assign bg = settings.background_color
+    assign fg = settings.foreground_color
+    assign accent = settings.accent_color
+    assign secondary = settings.secondary_color
+    assign tertiary = settings.tertiary_color
+  %}
 
   :root {
     --font-primary--family: {{ settings.type_primary_font.family }}, {{ settings.type_primary_font.fallback_families }};
     --font-primary--style: {{ settings.type_primary_font.style }};
     --font-primary--weight: {{ settings.type_primary_font.weight }};
+    --font-heading--family: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+    --font-heading--style: {{ settings.type_heading_font.style }};
+    --font-heading--weight: {{ settings.type_heading_font.weight }};
+
     --page-width: {{ settings.max_page_width }};
     --page-margin: {{ settings.min_page_margin }}px;
-    --color-background: {{ settings.background_color }};
-    --color-foreground: {{ settings.foreground_color }};
-    --style-border-radius-inputs: {{ settings.input_corner_radius }}px;
+
+    --radius: {{ settings.corner_radius }}px;
+    --radius-sm: calc({{ settings.corner_radius }}px * 0.55);
+    --radius-lg: calc({{ settings.corner_radius }}px * 1.45);
+    --radius-pill: 999px;
+    --style-border-radius-inputs: calc({{ settings.corner_radius }}px * 0.6);
+
+    --color-background: {{ bg }};
+    --color-surface: {{ settings.surface_color }};
+    --color-foreground: {{ fg }};
+    --color-muted: {{ fg | color_mix: bg, 62 }};
+    --color-border: {{ fg | color_mix: bg, 14 }};
+    --color-accent: {{ accent }};
+    --color-accent-dark: {{ accent | color_darken: 14 }};
+    --color-accent-soft: {{ accent | color_mix: bg, 22 }};
+    --color-secondary: {{ secondary }};
+    --color-secondary-dark: {{ secondary | color_darken: 18 }};
+    --color-secondary-soft: {{ secondary | color_mix: bg, 26 }};
+    --color-tertiary: {{ tertiary }};
+    --color-tertiary-soft: {{ tertiary | color_mix: bg, 34 }};
+    --color-on-accent: {{ fg }};
+
+    --shadow-color: {{ fg | color_modify: 'alpha', 0.08 }};
+    --shadow-sm: 0 1px 2px {{ fg | color_modify: 'alpha', 0.06 }};
+    --shadow: 0 2px 4px {{ fg | color_modify: 'alpha', 0.04 }}, 0 12px 28px -8px {{ fg | color_modify: 'alpha', 0.14 }};
+    --shadow-key: inset 0 -3px 0 {{ fg | color_modify: 'alpha', 0.16 }};
   }
 {% endstyle %}

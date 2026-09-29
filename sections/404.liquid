@@ -1,19 +1,15 @@
-{% comment %}
-  This section is used in the 404 template to render page shown when customers
-  enter an invalid store URL.
-
-  https://shopify.dev/docs/storefronts/themes/architecture/templates/404
-{% endcomment %}
-
-<h1>{{ '404.title' | t }}</h1>
-
-<p>
-  {{ '404.not_found' | t }}
-</p>
-
-<a href="{{ routes.all_products_collection_url }}">
-  {{ '404.back_to_shopping' | t }}
-</a>
+<div class="not-found section">
+  <div class="empty-state">
+    <img src="{{ 'illo-keycaps.svg' | asset_url }}" alt="" width="300" height="220">
+    <p class="eyebrow">{{ '404.title' | t }}</p>
+    <h1 class="h2">{{ '404.not_found' | t }}</h1>
+    <p>{{ '404.text' | t }}</p>
+    <div class="empty-state__actions">
+      <a class="btn" href="{{ routes.all_products_collection_url }}">{{ '404.back_to_shopping' | t }}</a>
+      <a class="btn btn--ghost" href="{{ routes.search_url }}">{{ 'search.title' | t }}</a>
+    </div>
+  </div>
+</div>
 
 {% schema %}
 {

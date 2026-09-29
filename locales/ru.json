@@ -1,0 +1,145 @@
+{
+  "404": {
+    "title": "404",
+    "not_found": "Такой клавиши у нас нет.",
+    "text": "Страница переехала или никогда не существовала.",
+    "back_to_shopping": "Вернуться к покупкам"
+  },
+  "accessibility": {
+    "skip_to_content": "Перейти к содержимому"
+  },
+  "general": {
+    "home": "Главная",
+    "breadcrumbs": "Навигация",
+    "pagination": "Страницы",
+    "previous": "Предыдущая страница",
+    "next": "Следующая страница"
+  },
+  "header": {
+    "menu": "Меню"
+  },
+  "footer": {
+    "payment_methods": "Способы оплаты"
+  },
+  "home": {
+    "hero_illustration_alt": "Кастомная механическая клавиатура, свитч и кейкапы"
+  },
+  "newsletter": {
+    "email": "Ваш email",
+    "submit": "Подписаться",
+    "success": "Спасибо! Вы в списке."
+  },
+  "blog": {
+    "journal": "Журнал",
+    "article_comments": "Комментарии",
+    "article_metadata_html": "{{ date }}, {{ author }}",
+    "comment_form_body": "Комментарий",
+    "comment_form_email": "Email",
+    "comment_form_name": "Имя",
+    "comment_form_submit": "Отправить",
+    "comment_form_title": "Оставить комментарий"
+  },
+  "builder": {
+    "progress": "Прогресс сборки",
+    "your_build": "Ваша сборка",
+    "feel": "Ощущение свитча",
+    "total": "Итого",
+    "add_build": "Добавить сборку в корзину",
+    "add_build_short": "В корзину",
+    "added": "Сборка добавлена — переходим в корзину…",
+    "demo_notice": "Режим превью: подключите коллекции клавиатур, свитчей и кейкапов в редакторе темы, чтобы продавать сборки.",
+    "demo_add": "Это демо-сборка. Подключите коллекции в редакторе темы, чтобы включить оформление заказа.",
+    "noscript": "Включите JavaScript, чтобы пользоваться конструктором.",
+    "skip_title": "У меня есть свои",
+    "skip_text": "Пропустить шаг",
+    "switches_qty": "[count] свитчей",
+    "pick": "Выбрать",
+    "layout": "раскладка",
+    "linear": "Линейные",
+    "tactile": "Тактильные",
+    "clicky": "Кликающие"
+  },
+  "cart": {
+    "title": "Корзина",
+    "checkout": "Оформить заказ",
+    "update": "Обновить",
+    "remove": "Удалить",
+    "view": "Открыть корзину",
+    "subtotal": "Сумма",
+    "taxes_note": "Налоги и доставка рассчитываются при оформлении.",
+    "note": "Комментарий к заказу",
+    "empty": "Корзина пуста",
+    "empty_text": "Любая клавиатура начинается с одной клавиши. Соберите свою или загляните в каталог.",
+    "start_build": "Собрать клавиатуру",
+    "continue": "Перейти в каталог"
+  },
+  "collections": {
+    "title": "Коллекции",
+    "view_all": "Смотреть все",
+    "sort_by": "Сортировка",
+    "clear": "Сбросить фильтры",
+    "apply": "Применить",
+    "from": "От",
+    "to": "До",
+    "empty": "Нет товаров под эти фильтры.",
+    "product_count": {
+      "one": "{{ count }} товар",
+      "few": "{{ count }} товара",
+      "many": "{{ count }} товаров",
+      "other": "{{ count }} товара"
+    }
+  },
+  "customers": {
+    "login": {
+      "email": "Email",
+      "password": "Пароль",
+      "submit": "Войти",
+      "title": "Вход"
+    }
+  },
+  "gift_card": {
+    "add_to_apple_wallet": "Добавить в Apple Wallet",
+    "card": "Подарочная карта",
+    "expired": "Срок действия карты истёк",
+    "expires_on": "Действует до {{ expires_on }}",
+    "use_at_checkout": "Используйте карту при оформлении заказа"
+  },
+  "password": {
+    "title": "Скоро открытие",
+    "password": "Пароль",
+    "enter": "Войти"
+  },
+  "products": {
+    "add_to_cart": "В корзину",
+    "added_to_cart": "добавлен в корзину.",
+    "adding": "Добавляем…",
+    "sold_out": "Нет в наличии",
+    "unavailable": "Недоступно",
+    "sale": "Скидка",
+    "from_price_html": "От {{ price }}",
+    "quantity": "Количество",
+    "increase": "Увеличить",
+    "decrease": "Уменьшить",
+    "description": "Описание",
+    "view_image": "Фото {{ number }}",
+    "builder_title": "Собери свою клавиатуру",
+    "builder_text": "Подберите свитчи и кейкапы и посмотрите, как это будет выглядеть.",
+    "builder_text_switch": "Попробуйте эти свитчи в полной сборке перед покупкой.",
+    "builder_text_keycaps": "Посмотрите эти кейкапы на выбранной клавиатуре."
+  },
+  "search": {
+    "title": "Поиск",
+    "placeholder": "Клавиатуры, свитчи, кейкапы",
+    "submit": "Найти",
+    "no_results_html": "По запросу «{{ terms }}» ничего не найдено",
+    "results_for_html": "Найдено {{ count }} по запросу «{{ terms }}»"
+  },
+  "switches": {
+    "feedback": "Отклик",
+    "sound": "Звук",
+    "shop": "Смотреть: {{ kind }}"
+  },
+  "testimonials": {
+    "rating": "Оценка {{ rating }} из 5"
+  }
+}

@@ -1,0 +1,715 @@
+{%- liquid
+  assign s = section.settings
+  assign has_products = false
+  assign demo = true
+  if s.keyboards.products_count > 0 or s.switches.products_count > 0 or s.keycaps.products_count > 0
+    assign has_products = true
+    assign demo = false
+  endif
+-%}
+
+<div class="builder section section--tight" data-builder id="Builder-{{ section.id }}">
+  <div class="builder__head">
+    <div>
+      {%- if s.eyebrow != blank -%}<p class="eyebrow">{{ s.eyebrow }}</p>{%- endif -%}
+      <h1>{{ s.heading }}</h1>
+      {%- if s.text != blank -%}<div class="builder__intro">{{ s.text }}</div>{%- endif -%}
+    </div>
+    <ol class="builder__progress" aria-label="{{ 'builder.progress' | t }}">
+      <li data-progress="base"><span>1</span>{{ s.step_1_title }}</li>
+      <li data-progress="switch"><span>2</span>{{ s.step_2_title }}</li>
+      <li data-progress="caps"><span>3</span>{{ s.step_3_title }}</li>
+    </ol>
+  </div>
+
+  {%- unless has_products -%}
+    <p class="builder__notice">
+      {{ 'icon-wrench.svg' | inline_asset_content }}
+      <span>{{ 'builder.demo_notice' | t }}</span>
+    </p>
+  {%- endunless -%}
+
+  <div class="builder__layout">
+    <div class="builder__steps">
+      {%- liquid
+        assign step_keys = 'base,switch,caps' | split: ','
+      -%}
+      {%- for key in step_keys -%}
+        {%- liquid
+          case key
+            when 'base'
+              assign title = s.step_1_title
+              assign text = s.step_1_text
+            when 'switch'
+              assign title = s.step_2_title
+              assign text = s.step_2_text
+            when 'caps'
+              assign title = s.step_3_title
+              assign text = s.step_3_text
+          endcase
+        -%}
+        <section class="step-panel" data-step="{{ key }}" aria-labelledby="StepTitle-{{ key }}-{{ section.id }}">
+          <header class="step-panel__head">
+            <span class="step-panel__num" aria-hidden="true">{{ forloop.index }}</span>
+            <div>
+              <h2 class="h3" id="StepTitle-{{ key }}-{{ section.id }}">{{ title }}</h2>
+              {%- if text != blank -%}<p>{{ text }}</p>{%- endif -%}
+            </div>
+          </header>
+          <div class="options" role="radiogroup" aria-labelledby="StepTitle-{{ key }}-{{ section.id }}" data-options="{{ key }}"></div>
+        </section>
+      {%- endfor -%}
+    </div>
+
+    <aside class="builder__summary" aria-label="{{ 'builder.your_build' | t }}">
+      <div class="summary-card">
+        <div class="summary-card__preview" data-preview aria-live="polite"></div>
+
+        <div class="summary-card__switch">
+          <div class="summary-card__switch-illo" data-switch-preview></div>
+          <div>
+            <p class="summary-card__label">{{ 'builder.feel' | t }}</p>
+            <p class="summary-card__switch-name" data-switch-name></p>
+          </div>
+          <span class="pill" data-build-id></span>
+        </div>
+
+        <ul class="summary-list" data-summary></ul>
+
+        {%- if s.assembly_product != blank -%}
+          {%- assign assembly_variant = s.assembly_product.selected_or_first_available_variant -%}
+          <label class="assembly">
+            <input type="checkbox" data-assembly value="{{ assembly_variant.id }}" data-price="{{ assembly_variant.price }}" checked>
+            <span class="assembly__box" aria-hidden="true">{{ 'icon-check.svg' | inline_asset_content }}</span>
+            <span class="assembly__text">
+              <strong>{{ s.assembly_product.title }}</strong>
+              <small>{{ s.assembly_text }}</small>
+            </span>
+            <span class="assembly__price">+{{ assembly_variant.price | money }}</span>
+          </label>
+        {%- endif -%}
+
+        <div class="summary-card__total">
+          <span>{{ 'builder.total' | t }}</span>
+          <strong data-total></strong>
+        </div>
+
+        <button class="btn btn--lg btn--block" type="button" data-add-build>
+          {{ 'icon-cart.svg' | inline_asset_content }}
+          <span>{{ 'builder.add_build' | t }}</span>
+        </button>
+        <p class="summary-card__note" data-build-message>{{ s.note }}</p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="builder__bar" aria-hidden="true">
+    <div>
+      <small>{{ 'builder.total' | t }}</small>
+      <strong data-total></strong>
+    </div>
+    <button class="btn" type="button" data-add-build tabindex="-1">
+      <span>{{ 'builder.add_build_short' | t }}</span>
+    </button>
+  </div>
+
+  <noscript><p class="builder__notice">{{ 'builder.noscript' | t }}</p></noscript>
+
+  <script type="application/json" data-builder-data>
+    {
+      "demo": {{ demo | json }},
+      "switchQuantity": {{ s.switch_quantity | json }},
+      "switchPack": {{ s.switch_pack_size | json }},
+      "allowSkip": {
+        "base": false,
+        "switch": {{ s.allow_skip_switches | json }},
+        "caps": {{ s.allow_skip_keycaps | json }}
+      },
+      "strings": {
+        "skipTitle": {{ 'builder.skip_title' | t | json }},
+        "skipText": {{ 'builder.skip_text' | t | json }},
+        "switchesQty": {{ 'builder.switches_qty' | t | json }},
+        "added": {{ 'builder.added' | t | json }},
+        "demo": {{ 'builder.demo_add' | t | json }},
+        "soldOut": {{ 'products.sold_out' | t | json }},
+        "pick": {{ 'builder.pick' | t | json }},
+        "layout": {{ 'builder.layout' | t | json }},
+        "switchLabels": {
+          "linear": {{ 'builder.linear' | t | json }},
+          "tactile": {{ 'builder.tactile' | t | json }},
+          "clicky": {{ 'builder.clicky' | t | json }}
+        }
+      },
+      "steps": {
+        "base": {% if s.keyboards.products_count > 0 %}{% render 'builder-options-json', collection: s.keyboards %}{% else %}null{% endif %},
+        "switch": {% if s.switches.products_count > 0 %}{% render 'builder-options-json', collection: s.switches %}{% else %}null{% endif %},
+        "caps": {% if s.keycaps.products_count > 0 %}{% render 'builder-options-json', collection: s.keycaps %}{% else %}null{% endif %}
+      }
+    }
+  </script>
+</div>
+
+<script src="{{ 'axion-render.js' | asset_url }}" defer="defer"></script>
+<script src="{{ 'builder.js' | asset_url }}" defer="defer"></script>
+
+{% stylesheet %}
+  .builder__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1.5rem 2rem;
+  }
+
+  .builder__intro {
+    margin-top: 0.75rem;
+    max-width: 36rem;
+    color: var(--color-muted);
+    font-size: 1.05rem;
+  }
+
+  .builder__progress {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0;
+    list-style: none;
+  }
+
+  .builder__progress li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.9rem 0.35rem 0.35rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-surface);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: background-color 0.25s ease;
+  }
+
+  .builder__progress span {
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-background);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    font-size: 0.8rem;
+  }
+
+  .builder__progress li.is-done {
+    background: var(--color-secondary-soft);
+    box-shadow: none;
+  }
+
+  .builder__progress li.is-done span {
+    background: var(--color-secondary);
+    box-shadow: none;
+  }
+
+  .builder__notice {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding: 0.9rem 1.2rem;
+    border-radius: var(--radius);
+    background: var(--color-accent-soft);
+    font-size: 0.925rem;
+  }
+
+  .builder__notice svg {
+    flex: none;
+    width: 1.3rem;
+  }
+
+  .builder__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(20rem, 27rem);
+    align-items: start;
+    gap: clamp(1rem, 0.5rem + 2vw, 2rem);
+  }
+
+  .builder__steps {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .step-panel {
+    padding: clamp(1rem, 0.75rem + 1vw, 1.75rem);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: 0 0 0 1px var(--color-border);
+  }
+
+  .step-panel__head {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .step-panel__head p {
+    margin-top: 0.25rem;
+    font-size: 0.925rem;
+    color: var(--color-muted);
+  }
+
+  .step-panel__num {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 0.8rem;
+    background: var(--color-accent);
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: 1.1rem;
+    box-shadow: var(--shadow-key);
+  }
+
+  .options {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(9.5rem, calc(50% - 0.4rem)), 1fr));
+    gap: 0.75rem;
+  }
+
+  .option {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0.6rem 0.6rem 0.85rem;
+    border-radius: var(--radius);
+    background: var(--color-background);
+    box-shadow: inset 0 0 0 1.5px var(--color-border);
+    cursor: pointer;
+    transition: box-shadow 0.2s ease, transform 0.2s ease, background-color 0.2s ease;
+  }
+
+  .option:hover {
+    transform: translateY(-2px);
+  }
+
+  .option:has(input:checked) {
+    background: var(--color-surface);
+    box-shadow: inset 0 0 0 2px var(--color-secondary), 0 0 0 4px var(--color-secondary-soft);
+  }
+
+  .option:has(input:focus-visible) {
+    outline: 2px solid var(--color-accent-dark);
+    outline-offset: 3px;
+  }
+
+  .option.is-unavailable {
+    opacity: 0.55;
+  }
+
+  .option input[type='radio'] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .option__media {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 4 / 3;
+    border-radius: calc(var(--radius) - 0.4rem);
+    background: var(--color-tertiary-soft);
+    overflow: hidden;
+  }
+
+  .option__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .option__media svg {
+    width: 82%;
+    height: 82%;
+  }
+
+  .option__media--skip {
+    background: repeating-linear-gradient(135deg, transparent 0 10px, var(--color-border) 10px 11px);
+    font-size: 2rem;
+  }
+
+  .option__title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.3;
+    padding-inline: 0.25rem;
+  }
+
+  .option__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding-inline: 0.25rem;
+    font-size: 0.875rem;
+  }
+
+  .option__meta .muted {
+    color: var(--color-muted);
+    font-size: 0.8rem;
+  }
+
+  .option__check {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-secondary);
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+  }
+
+  .option__check svg {
+    width: 1rem;
+  }
+
+  .option:has(input:checked) .option__check {
+    opacity: 1;
+    transform: none;
+  }
+
+  .option .select {
+    min-height: 2.4rem;
+    padding: 0.35rem 2rem 0.35rem 0.7rem;
+    font-size: 0.85rem;
+    background-position: right 0.5rem center;
+  }
+
+  .builder__summary {
+    position: sticky;
+    top: 6.5rem;
+  }
+
+  .summary-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: 0 0 0 1px var(--color-border), var(--shadow);
+  }
+
+  .summary-card__preview {
+    display: grid;
+    place-items: center;
+    min-height: 11rem;
+    padding: 1.5rem 1rem 1rem;
+    border-radius: var(--radius);
+    background:
+      radial-gradient(circle at 1px 1px, var(--color-border) 1px, transparent 0) 0 0 / 14px 14px,
+      var(--color-tertiary-soft);
+  }
+
+  .summary-card__preview svg {
+    width: 100%;
+    animation: preview-in 0.35s ease;
+  }
+
+  @keyframes preview-in {
+    from {
+      opacity: 0.4;
+      transform: scale(0.98);
+    }
+  }
+
+  .summary-card__switch {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem 0.5rem 0.5rem;
+    border-radius: var(--radius);
+    background: var(--color-background);
+  }
+
+  .summary-card__switch > div:nth-child(2) {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .summary-card__switch-illo {
+    flex: none;
+    width: 3rem;
+    height: 3.3rem;
+  }
+
+  .summary-card__label {
+    font-size: 0.75rem;
+    color: var(--color-muted);
+  }
+
+  .summary-card__switch-name {
+    font-weight: 600;
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+
+  .summary-list {
+    display: flex;
+    flex-direction: column;
+    padding: 0 0.25rem;
+    list-style: none;
+  }
+
+  .summary-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: 0.6rem;
+    border-bottom: 1px dashed var(--color-border);
+    font-size: 0.925rem;
+  }
+
+  .summary-list li span:first-child {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .summary-list small {
+    color: var(--color-muted);
+    font-size: 0.8rem;
+  }
+
+  .summary-list li > span:last-child {
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .assembly {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.8rem;
+    border-radius: var(--radius);
+    background: var(--color-secondary-soft);
+    cursor: pointer;
+  }
+
+  .assembly input {
+    position: absolute;
+    opacity: 0;
+  }
+
+  .assembly__box {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 0.45rem;
+    background: var(--color-surface);
+    box-shadow: inset 0 0 0 1.5px var(--color-border);
+  }
+
+  .assembly__box svg {
+    width: 1rem;
+    opacity: 0;
+  }
+
+  .assembly input:checked + .assembly__box {
+    background: var(--color-secondary);
+    box-shadow: none;
+  }
+
+  .assembly input:checked + .assembly__box svg {
+    opacity: 1;
+  }
+
+  .assembly input:focus-visible + .assembly__box {
+    outline: 2px solid var(--color-accent-dark);
+    outline-offset: 2px;
+  }
+
+  .assembly__text {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+    font-size: 0.9rem;
+  }
+
+  .assembly__text small {
+    color: var(--color-muted);
+  }
+
+  .assembly__price {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .summary-card__total {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 0 0.25rem;
+  }
+
+  .summary-card__total strong {
+    font-family: var(--font-heading--family);
+    font-weight: var(--font-heading--weight);
+    font-size: 1.75rem;
+  }
+
+  .summary-card__note {
+    text-align: center;
+    font-size: 0.8rem;
+    color: var(--color-muted);
+  }
+
+  .builder__bar {
+    display: none;
+  }
+
+  @media (max-width: 989px) {
+    .builder__layout {
+      grid-template-columns: 1fr;
+    }
+
+    .builder__summary {
+      position: static;
+      order: -1;
+    }
+
+    .summary-card .summary-list,
+    .summary-card .summary-card__total {
+      display: none;
+    }
+
+    .builder__bar {
+      position: fixed;
+      z-index: 15;
+      left: var(--page-margin);
+      right: var(--page-margin);
+      bottom: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.6rem 0.6rem 0.6rem 1.2rem;
+      border-radius: var(--radius-lg);
+      background: var(--color-foreground);
+      color: var(--color-background);
+      box-shadow: var(--shadow);
+    }
+
+    .builder__bar small {
+      display: block;
+      font-size: 0.75rem;
+      opacity: 0.7;
+    }
+
+    .builder__bar strong {
+      font-size: 1.2rem;
+    }
+
+    .template-page .footer {
+      padding-bottom: 6rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.keyboard_builder",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "t:labels.eyebrow", "default": "Build Your Keyboard" },
+    { "type": "text", "id": "heading", "label": "t:labels.heading", "default": "Build a board that's yours" },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "t:labels.text",
+      "default": "<p>Choose a base, switches and keycaps. The preview updates as you go, and the whole build goes into your cart in one click.</p>"
+    },
+    {
+      "type": "header",
+      "content": "t:labels.builder_step_1"
+    },
+    { "type": "text", "id": "step_1_title", "label": "t:labels.heading", "default": "Base" },
+    { "type": "text", "id": "step_1_text", "label": "t:labels.text", "default": "Layout, case and plate. Everything else snaps onto this." },
+    {
+      "type": "collection",
+      "id": "keyboards",
+      "label": "t:labels.collection",
+      "info": "t:info.builder_keyboards"
+    },
+    {
+      "type": "header",
+      "content": "t:labels.builder_step_2"
+    },
+    { "type": "text", "id": "step_2_title", "label": "t:labels.heading", "default": "Switches" },
+    { "type": "text", "id": "step_2_text", "label": "t:labels.text", "default": "How each key feels and sounds." },
+    {
+      "type": "collection",
+      "id": "switches",
+      "label": "t:labels.collection",
+      "info": "t:info.builder_switches"
+    },
+    {
+      "type": "select",
+      "id": "switch_quantity",
+      "label": "t:labels.switch_quantity",
+      "options": [
+        { "value": "per_switch", "label": "t:options.switch_quantity.per_switch" },
+        { "value": "per_pack", "label": "t:options.switch_quantity.per_pack" }
+      ],
+      "default": "per_pack"
+    },
+    {
+      "type": "range",
+      "id": "switch_pack_size",
+      "label": "t:labels.switch_pack_size",
+      "min": 10,
+      "max": 120,
+      "step": 5,
+      "default": 70,
+      "visible_if": "{{ section.settings.switch_quantity == 'per_pack' }}"
+    },
+    { "type": "checkbox", "id": "allow_skip_switches", "label": "t:labels.allow_skip", "default": true },
+    {
+      "type": "header",
+      "content": "t:labels.builder_step_3"
+    },
+    { "type": "text", "id": "step_3_title", "label": "t:labels.heading", "default": "Keycaps" },
+    { "type": "text", "id": "step_3_text", "label": "t:labels.text", "default": "The colours you'll look at every day." },
+    {
+      "type": "collection",
+      "id": "keycaps",
+      "label": "t:labels.collection",
+      "info": "t:info.builder_keycaps"
+    },
+    { "type": "checkbox", "id": "allow_skip_keycaps", "label": "t:labels.allow_skip", "default": true },
+    {
+      "type": "header",
+      "content": "t:labels.builder_extras"
+    },
+    {
+      "type": "product",
+      "id": "assembly_product",
+      "label": "t:labels.assembly_product",
+      "info": "t:info.assembly_product"
+    },
+    { "type": "text", "id": "assembly_text", "label": "t:labels.caption", "default": "Hand-lubed, assembled & tested" },
+    { "type": "text", "id": "note", "label": "t:labels.note", "default": "Ships in 3–5 days · 30-day returns" }
+  ],
+  "presets": [{ "name": "t:general.keyboard_builder" }]
+}
+{% endschema %}

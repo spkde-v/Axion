@@ -1,23 +1,91 @@
 {
   "404": {
     "title": "404",
-    "not_found": "Page not found.",
+    "not_found": "This key isn't on our board.",
+    "text": "The page you're looking for moved or never existed.",
     "back_to_shopping": "Back to shopping"
   },
+  "accessibility": {
+    "skip_to_content": "Skip to content"
+  },
+  "general": {
+    "home": "Home",
+    "breadcrumbs": "Breadcrumbs",
+    "pagination": "Pagination",
+    "previous": "Previous page",
+    "next": "Next page"
+  },
+  "header": {
+    "menu": "Menu"
+  },
+  "footer": {
+    "payment_methods": "Payment methods"
+  },
+  "home": {
+    "hero_illustration_alt": "A custom mechanical keyboard with a loose switch and keycaps"
+  },
+  "newsletter": {
+    "email": "Your email",
+    "submit": "Subscribe",
+    "success": "Thanks! You're on the list."
+  },
   "blog": {
+    "journal": "Journal",
     "article_comments": "Comments",
     "article_metadata_html": "{{ date }} by {{ author }}",
     "comment_form_body": "Comment",
     "comment_form_email": "Email",
     "comment_form_name": "Name",
-    "comment_form_submit": "Post",
+    "comment_form_submit": "Post comment",
     "comment_form_title": "Add a comment"
   },
+  "builder": {
+    "progress": "Build progress",
+    "your_build": "Your build",
+    "feel": "Switch feel",
+    "total": "Total",
+    "add_build": "Add build to cart",
+    "add_build_short": "Add build",
+    "added": "Build added — taking you to the cart…",
+    "demo_notice": "Preview mode: connect your Keyboards, Switches and Keycaps collections in the theme editor to start selling builds.",
+    "demo_add": "This is a demo build. Connect collections in the theme editor to enable checkout.",
+    "noscript": "Please enable JavaScript to use the keyboard builder.",
+    "skip_title": "I'll use my own",
+    "skip_text": "Skip this step",
+    "switches_qty": "[count] switches",
+    "pick": "Choose",
+    "layout": "layout",
+    "linear": "Linear",
+    "tactile": "Tactile",
+    "clicky": "Clicky"
+  },
   "cart": {
-    "checkout": "Checkout",
-    "title": "Cart",
-    "update": "Update",
-    "remove": "Remove"
+    "title": "Your cart",
+    "checkout": "Check out",
+    "update": "Update cart",
+    "remove": "Remove",
+    "view": "View cart",
+    "subtotal": "Subtotal",
+    "taxes_note": "Taxes and shipping are calculated at checkout.",
+    "note": "Order note",
+    "empty": "Your cart is empty",
+    "empty_text": "Every great board starts with a single key. Build one or browse the shop.",
+    "start_build": "Build a keyboard",
+    "continue": "Browse the shop"
+  },
+  "collections": {
+    "title": "Collections",
+    "view_all": "View all",
+    "sort_by": "Sort by",
+    "clear": "Clear filters",
+    "apply": "Apply",
+    "from": "From",
+    "to": "To",
+    "empty": "No products match these filters.",
+    "product_count": {
+      "one": "{{ count }} product",
+      "other": "{{ count }} products"
+    }
   },
   "customers": {
     "login": {
@@ -27,9 +95,6 @@
       "title": "Login"
     }
   },
-  "collections": {
-    "title": "Collections"
-  },
   "gift_card": {
     "add_to_apple_wallet": "Add to Apple Wallet",
     "card": "Gift card",
@@ -38,15 +103,41 @@
     "use_at_checkout": "Use this gift card at checkout"
   },
   "password": {
-    "title": "This shop is private",
+    "title": "Opening soon",
     "password": "Password",
     "enter": "Enter"
   },
+  "products": {
+    "add_to_cart": "Add to cart",
+    "added_to_cart": "added to your cart.",
+    "adding": "Adding…",
+    "sold_out": "Sold out",
+    "unavailable": "Unavailable",
+    "sale": "Sale",
+    "from_price_html": "From {{ price }}",
+    "quantity": "Quantity",
+    "increase": "Increase quantity",
+    "decrease": "Decrease quantity",
+    "description": "Description",
+    "view_image": "View image {{ number }}",
+    "builder_title": "Build Your Keyboard",
+    "builder_text": "Pair this with switches and keycaps and see it come together.",
+    "builder_text_switch": "Try these switches in a full build before you buy.",
+    "builder_text_keycaps": "Preview these keycaps on the board of your choice."
+  },
   "search": {
     "title": "Search",
-    "placeholder": "Search articles, pages, or products",
+    "placeholder": "Search keyboards, switches, keycaps",
     "submit": "Search",
-    "no_results_html": "No results found for {{ terms }}",
-    "results_for_html": "{{ count }} results found for {{ terms }}"
+    "no_results_html": "No results found for “{{ terms }}”",
+    "results_for_html": "{{ count }} results for “{{ terms }}”"
+  },
+  "switches": {
+    "feedback": "Feedback",
+    "sound": "Sound",
+    "shop": "Shop {{ kind }}"
+  },
+  "testimonials": {
+    "rating": "Rated {{ rating }} out of 5"
   }
 }

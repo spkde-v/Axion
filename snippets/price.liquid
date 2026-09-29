@@ -1,0 +1,35 @@
+{% doc %}
+  Renders a product or variant price with an optional compare-at price.
+
+  @param {object} target - A product or variant
+  @param {boolean} [show_from] - Prefix with "From" when a product has varying prices
+{% enddoc %}
+
+{%- liquid
+  if target.selected_or_first_available_variant
+    assign variant = target.selected_or_first_available_variant
+    assign price = variant.price
+    assign compare = variant.compare_at_price
+  else
+    assign price = target.price
+    assign compare = target.compare_at_price
+  endif
+  assign on_sale = false
+  if compare > price
+    assign on_sale = true
+  endif
+-%}
+
+<span class="price{% if on_sale %} price--sale{% endif %}">
+  <span class="price__current" data-price>
+    {%- if show_from and target.price_varies -%}
+      {%- assign min_price = target.price_min | money -%}
+      {{ 'products.from_price_html' | t: price: min_price }}
+    {%- else -%}
+      {{ price | money }}
+    {%- endif -%}
+  </span>
+  <s data-compare-price{% unless on_sale %} hidden{% endunless %}>
+    {%- if on_sale %}{{ compare | money }}{% endif -%}
+  </s>
+</span>

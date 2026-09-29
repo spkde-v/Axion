@@ -1,0 +1,191 @@
+<div class="switch-guide section">
+  <div class="section-head">
+    <div class="section-head__text">
+      {%- if section.settings.eyebrow != blank -%}<p class="eyebrow">{{ section.settings.eyebrow }}</p>{%- endif -%}
+      <h2>{{ section.settings.heading }}</h2>
+      {%- if section.settings.text != blank -%}<p>{{ section.settings.text }}</p>{%- endif -%}
+    </div>
+  </div>
+
+  <div class="switch-guide__grid">
+    {%- for block in section.blocks -%}
+      {%- assign kind = block.settings.kind -%}
+      <article class="switch-type switch-type--{{ kind }}" {{ block.shopify_attributes }}>
+        <div class="switch-type__media">
+          <img src="{{ 'illo-switch-' | append: kind | append: '.svg' | asset_url }}" alt="" width="200" height="220" loading="lazy">
+        </div>
+        <div class="switch-type__body">
+          <span class="pill pill--switch pill--{{ kind }}">{{ block.settings.label }}</span>
+          <h3>{{ block.settings.title }}</h3>
+          <p>{{ block.settings.text }}</p>
+
+          <dl class="meters">
+            <div class="meter">
+              <dt>{{ 'switches.feedback' | t }}</dt>
+              <dd><span style="--v: {{ block.settings.feedback }};"></span></dd>
+            </div>
+            <div class="meter">
+              <dt>{{ 'switches.sound' | t }}</dt>
+              <dd><span style="--v: {{ block.settings.sound }};"></span></dd>
+            </div>
+          </dl>
+
+          {%- if block.settings.collection -%}
+            <a class="link-arrow" href="{{ block.settings.collection.url }}">
+              {{ 'switches.shop' | t: kind: block.settings.label }}
+              {{ 'icon-arrow.svg' | inline_asset_content }}
+            </a>
+          {%- endif -%}
+        </div>
+      </article>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% stylesheet %}
+  .switch-guide__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
+    gap: clamp(0.9rem, 0.6rem + 1vw, 1.5rem);
+  }
+
+  .switch-type {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: 0 0 0 1px var(--color-border);
+    overflow: hidden;
+  }
+
+  .switch-type__media {
+    display: grid;
+    place-items: center;
+    padding: 1.75rem 1rem 0.5rem;
+    background: var(--color-tertiary-soft);
+  }
+
+  .switch-type--linear .switch-type__media {
+    background: var(--color-accent-soft);
+  }
+
+  .switch-type--clicky .switch-type__media {
+    background: var(--color-secondary-soft);
+  }
+
+  .switch-type__media img {
+    width: 9rem;
+    transition: transform 0.3s ease;
+  }
+
+  .switch-type:hover .switch-type__media img {
+    transform: translateY(6px);
+  }
+
+  .switch-type__body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1.5rem;
+    flex: 1;
+  }
+
+  .switch-type__body > p {
+    color: var(--color-muted);
+    font-size: 0.95rem;
+  }
+
+  .meters {
+    display: grid;
+    gap: 0.5rem;
+    width: 100%;
+    margin-block: 0.25rem 0.5rem;
+  }
+
+  .meter {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+  }
+
+  .meter dd {
+    margin: 0;
+    height: 0.6rem;
+    border-radius: var(--radius-pill);
+    background: var(--color-background);
+    box-shadow: inset 0 0 0 1px var(--color-border);
+    overflow: hidden;
+  }
+
+  .meter dd span {
+    display: block;
+    height: 100%;
+    width: calc(var(--v) * 20%);
+    border-radius: inherit;
+    background: var(--color-secondary);
+  }
+
+  .switch-type__body .link-arrow {
+    margin-top: auto;
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "t:general.switch_guide",
+  "max_blocks": 3,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "t:labels.eyebrow", "default": "Switch guide" },
+    { "type": "text", "id": "heading", "label": "t:labels.heading", "default": "Not sure which switch? Start here." },
+    { "type": "text", "id": "text", "label": "t:labels.text", "default": "The switch decides how every keystroke feels and sounds. Here's the short version." }
+  ],
+  "blocks": [
+    {
+      "type": "switch",
+      "name": "t:general.switch_type",
+      "settings": [
+        {
+          "type": "select",
+          "id": "kind",
+          "label": "t:labels.type",
+          "options": [
+            { "value": "linear", "label": "Linear" },
+            { "value": "tactile", "label": "Tactile" },
+            { "value": "clicky", "label": "Clicky" }
+          ],
+          "default": "linear"
+        },
+        { "type": "text", "id": "label", "label": "t:labels.label", "default": "Linear" },
+        { "type": "text", "id": "title", "label": "t:labels.heading", "default": "Smooth all the way down" },
+        { "type": "textarea", "id": "text", "label": "t:labels.text", "default": "No bump, no click. Great for fast typing and gaming." },
+        { "type": "range", "id": "feedback", "label": "t:labels.feedback", "min": 1, "max": 5, "step": 1, "default": 1 },
+        { "type": "range", "id": "sound", "label": "t:labels.sound", "min": 1, "max": 5, "step": 1, "default": 2 },
+        { "type": "collection", "id": "collection", "label": "t:labels.collection" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "t:general.switch_guide",
+      "blocks": [
+        {
+          "type": "switch",
+          "settings": { "kind": "linear", "label": "Linear", "title": "Smooth all the way down", "text": "No bump, no click. Quiet, fast and great for gaming.", "feedback": 1, "sound": 2 }
+        },
+        {
+          "type": "switch",
+          "settings": { "kind": "tactile", "label": "Tactile", "title": "A gentle bump you can feel", "text": "A soft bump tells you the key registered. Loved by writers.", "feedback": 4, "sound": 3 }
+        },
+        {
+          "type": "switch",
+          "settings": { "kind": "clicky", "label": "Clicky", "title": "Crisp, loud and satisfying", "text": "Bump plus an audible click. Old-school typewriter energy.", "feedback": 5, "sound": 5 }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

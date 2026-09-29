@@ -1,0 +1,28 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "keyboard-builder",
+      "settings": {}
+    },
+    "switches": {
+      "type": "switch-guide",
+      "blocks": {
+        "linear": { "type": "switch", "settings": { "kind": "linear", "label": "Linear", "title": "Smooth all the way down", "text": "No bump, no click. Quiet, fast and great for gaming.", "feedback": 1, "sound": 2 } },
+        "tactile": { "type": "switch", "settings": { "kind": "tactile", "label": "Tactile", "title": "A gentle bump you can feel", "text": "A soft bump tells you the key registered. Loved by writers.", "feedback": 4, "sound": 3 } },
+        "clicky": { "type": "switch", "settings": { "kind": "clicky", "label": "Clicky", "title": "Crisp, loud and satisfying", "text": "Bump plus an audible click. Old-school typewriter energy.", "feedback": 5, "sound": 5 } }
+      },
+      "block_order": ["linear", "tactile", "clicky"],
+      "settings": { "heading": "Still deciding on switches?" }
+    }
+  },
+  "order": ["main", "switches"]
+}

@@ -11,12 +11,14 @@
   "type": "header",
   "name": "t:general.header",
   "sections": {
+    "announcement": {
+      "type": "announcement-bar",
+      "settings": {}
+    },
     "header": {
       "type": "header",
       "settings": {}
     }
   },
-  "order": [
-    "header"
-  ],
+  "order": ["announcement", "header"]
 }

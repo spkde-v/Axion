@@ -1,0 +1,173 @@
+{% doc %}
+  Renders a rounded product card used in grids and sliders.
+
+  @param {product} [product] - The product to render. Renders a placeholder card when blank.
+  @param {number} [index] - Card index, used to vary placeholder illustrations
+  @param {string} [sizes] - The `sizes` attribute for the responsive image
+{% enddoc %}
+
+{%- liquid
+  assign sizes = sizes | default: '(min-width: 1100px) 25vw, (min-width: 750px) 33vw, 50vw'
+  assign illos = 'illo-keyboard.svg,illo-switch-linear.svg,illo-keycaps.svg,illo-switch-tactile.svg' | split: ','
+  assign illo_index = index | default: 0 | modulo: 4
+  assign switch_type = ''
+  if product
+    for tag in product.tags
+      assign tag_lc = tag | downcase
+      if tag_lc contains 'switch:'
+        assign switch_type = tag_lc | remove: 'switch:' | strip
+      endif
+    endfor
+  endif
+-%}
+
+<article class="product-card">
+  <a class="product-card__media media" href="{{ product.url | default: '#' }}" tabindex="-1" aria-hidden="true">
+    {%- if product.featured_media -%}
+      {{
+        product.featured_media
+        | image_url: width: 900
+        | image_tag:
+          widths: '300, 450, 600, 900',
+          sizes: sizes,
+          loading: 'lazy',
+          class: 'product-card__img'
+      }}
+      {%- if product.media[1] -%}
+        {{
+          product.media[1]
+          | image_url: width: 900
+          | image_tag:
+            widths: '300, 450, 600, 900',
+            sizes: sizes,
+            loading: 'lazy',
+            alt: '',
+            class: 'product-card__img product-card__img--hover'
+        }}
+      {%- endif -%}
+    {%- else -%}
+      <img
+        class="product-card__illo"
+        src="{{ illos[illo_index] | asset_url }}"
+        alt=""
+        width="400"
+        height="300"
+        loading="lazy"
+      >
+    {%- endif -%}
+
+    <span class="product-card__badges">
+      {%- if product and product.available == false -%}
+        <span class="pill">{{ 'products.sold_out' | t }}</span>
+      {%- elsif product.compare_at_price > product.price -%}
+        <span class="pill pill--accent">{{ 'products.sale' | t }}</span>
+      {%- endif -%}
+      {%- if switch_type != blank -%}
+        <span class="pill pill--switch pill--{{ switch_type | handleize }}">{{ switch_type | capitalize }}</span>
+      {%- endif -%}
+    </span>
+  </a>
+
+  <div class="product-card__info">
+    {%- if product.vendor != blank and product.vendor != shop.name -%}
+      <p class="product-card__vendor">{{ product.vendor }}</p>
+    {%- endif -%}
+    <h3 class="product-card__title">
+      <a href="{{ product.url | default: '#' }}">
+        {{- product.title | default: 'Axion Sample Product' | escape -}}
+      </a>
+    </h3>
+    {%- if product -%}
+      {% render 'price', target: product, show_from: true %}
+    {%- else -%}
+      <span class="price">{{ 12900 | money }}</span>
+    {%- endif -%}
+  </div>
+</article>
+
+{% stylesheet %}
+  .product-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+
+  .product-card__media {
+    display: block;
+    aspect-ratio: 1;
+    border-radius: var(--radius);
+    background: var(--color-surface);
+    box-shadow: 0 0 0 1px var(--color-border);
+    transition: box-shadow 0.25s ease, transform 0.25s ease;
+  }
+
+  .product-card:hover .product-card__media {
+    transform: translateY(-3px);
+    box-shadow: 0 0 0 1px var(--color-border), var(--shadow);
+  }
+
+  .product-card__media > .product-card__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: opacity 0.35s ease;
+  }
+
+  .product-card__img--hover {
+    opacity: 0;
+  }
+
+  .product-card:hover .product-card__img--hover {
+    opacity: 1;
+  }
+
+  .product-card__media > .product-card__illo {
+    position: absolute;
+    inset: 14%;
+    width: 72%;
+    height: 72%;
+    object-fit: contain;
+  }
+
+  .product-card__badges {
+    position: absolute;
+    top: 0.75rem;
+    left: 0.75rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .product-card__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding-inline: 0.25rem;
+  }
+
+  .product-card__vendor {
+    font-size: 0.8rem;
+    color: var(--color-muted);
+  }
+
+  .product-card__title {
+    font-family: var(--font-primary--family);
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    line-height: 1.35;
+  }
+
+  .product-card__title a {
+    text-decoration: none;
+  }
+
+  .product-card__title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+{% endstylesheet %}

@@ -11,6 +11,11 @@
   "sections": {
     "main": {
       "type": "product",
+      "blocks": {
+        "shipping": { "type": "collapsible", "settings": { "title": "Shipping & returns", "content": "<p>Ships in 3–5 business days. Free returns within 30 days.</p>" } },
+        "care": { "type": "collapsible", "settings": { "title": "Compatibility", "content": "<p>MX-style stems, hot-swap PCBs and standard ANSI layouts. Not sure? Ask us before you order.</p>" } }
+      },
+      "block_order": ["shipping", "care"],
       "settings": {}
     }
   },

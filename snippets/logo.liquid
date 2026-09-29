@@ -1,0 +1,30 @@
+{% doc %}
+  Renders the store logo image, or the Axion wordmark when no logo is set.
+{% enddoc %}
+
+{%- if settings.logo -%}
+  {%- liquid
+    assign logo_style = 'width: ' | append: settings.logo_width | append: 'px'
+    assign logo_sizes = settings.logo_width | append: 'px'
+  -%}
+  {{
+    settings.logo
+    | image_url: width: 480
+    | image_tag:
+      class: 'logo__image',
+      alt: shop.name,
+      style: logo_style,
+      widths: '240, 360, 480',
+      sizes: logo_sizes
+  }}
+{%- else -%}
+  <span class="logo__mark" aria-hidden="true">
+    <svg viewBox="0 0 32 32" width="32" height="32">
+      <rect x="1" y="3" width="30" height="28" rx="8" fill="var(--color-accent-dark)"/>
+      <rect x="1" y="1" width="30" height="26" rx="8" fill="var(--color-accent)"/>
+      <rect x="6" y="4" width="20" height="17" rx="5" fill="#fff" opacity=".22"/>
+      <path d="M11 20.5 16 8l5 12.5M12.8 16h6.4" fill="none" stroke="var(--color-foreground)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </span>
+  <span class="logo__text">{{ shop.name | downcase }}</span>
+{%- endif -%}
