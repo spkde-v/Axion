@@ -31,6 +31,16 @@ Setup:
 Until collections are connected, the builder runs in demo mode with sample parts (checkout disabled).
 Selections are kept in the URL (`?base=…&switch=…&caps=…`), so a build can be shared as a link.
 
+## Contact page
+
+Create a page (e.g. `contact`) and assign the **page.contact** template. The `contact` section has:
+
+- a contact form with topic keys, optional phone and order number, character counter, success and error states;
+- address with an illustrated map (or your own image) that opens Google Maps;
+- opening hours with a live "open now / closed" badge and the workshop's local time (set the time zone, hours and days in the editor);
+- contact channels as blocks — email, phone, messenger or link — with one-click copy for email and phone;
+- quick-answer FAQ blocks.
+
 ## Small details
 
 - **Hero keyboard** reacts to real typing: keys sink on the illustration and the text shows up in a little screen. It types "axion" once on load. Tap keys on touch devices.

@@ -40,7 +40,10 @@
     "testimonials": "Testimonials",
     "text": "Text",
     "tile": "Tile",
-    "typography": "Typography"
+    "typography": "Typography",
+    "contact": "Contact",
+    "contact_channel": "Contact channel",
+    "faq_item": "Question"
   },
   "info": {
     "builder_keyboards": "Tag products with layout:60, layout:65, layout:75 or layout:tkl and case:#HEX to drive the preview.",
@@ -50,7 +53,12 @@
     "hero_image": "Leave empty to use the interactive keyboard illustration.",
     "hero_heading": "Wrap a word in [brackets] to set it in keycaps.",
     "receipt_lines": "One line per item, written as Label: Value.",
-    "wordmark": "Defaults to the store name."
+    "wordmark": "Defaults to the store name.",
+    "topics": "Comma separated. Shown as keys the customer can pick.",
+    "map_image": "Optional. Leave empty for the illustrated map.",
+    "open_days": "Comma separated, 1 = Monday … 7 = Sunday.",
+    "timezone": "IANA name, e.g. Europe/Berlin or America/New_York.",
+    "channel_link": "Used for messenger and link types. Email and phone links are created automatically."
   },
   "labels": {
     "accent": "Accent",
@@ -132,7 +140,19 @@
     "mod_color": "Modifier keycaps",
     "wordmark": "Footer wordmark",
     "signoff": "Sign-off",
-    "sticker": "Sticker text"
+    "sticker": "Sticker text",
+    "reply_time": "Reply time",
+    "contact_form": "Form",
+    "topics": "Topics",
+    "placeholder": "Placeholder",
+    "address": "Address",
+    "map_image": "Map image",
+    "hours": "Opening hours",
+    "open_time": "Opens at (HH:MM)",
+    "close_time": "Closes at (HH:MM)",
+    "open_days": "Open days",
+    "timezone": "Time zone",
+    "faq": "FAQ"
   },
   "options": {
     "alignment": {

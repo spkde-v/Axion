@@ -505,10 +505,115 @@
     else window.location.href = config.routes.search || '/search';
   });
 
+  /* ---------- Contact: live opening hours ---------- */
+  var WEEKDAYS = { Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6, Sun: 7 };
+
+  function toMinutes(value) {
+    var m = /^(\d{1,2}):(\d{2})$/.exec(String(value || '').trim());
+    return m ? Number(m[1]) * 60 + Number(m[2]) : null;
+  }
+
+  function initHours(el) {
+    if (el._hours) return;
+    el._hours = true;
+    var open = toMinutes(el.getAttribute('data-open'));
+    var close = toMinutes(el.getAttribute('data-close'));
+    var days = (el.getAttribute('data-days') || '').split(',').map(function (d) {
+      return Number(d.trim());
+    });
+    var formatter;
+    try {
+      formatter = new Intl.DateTimeFormat('en-GB', {
+        timeZone: el.getAttribute('data-tz') || undefined,
+        weekday: 'short',
+        hour: '2-digit',
+        minute: '2-digit',
+        hourCycle: 'h23'
+      });
+    } catch (e) {
+      return;
+    }
+    var status = el.querySelector('[data-hours-status]');
+    var label = el.querySelector('[data-hours-label]');
+    var clock = el.querySelector('[data-hours-clock]');
+    var time = el.querySelector('[data-hours-time]');
+
+    function tick() {
+      var parts = {};
+      formatter.formatToParts(new Date()).forEach(function (p) {
+        parts[p.type] = p.value;
+      });
+      var now = Number(parts.hour) * 60 + Number(parts.minute);
+      var isOpen = open !== null && close !== null && days.indexOf(WEEKDAYS[parts.weekday]) > -1 && now >= open && now < close;
+      el.classList.toggle('is-open', isOpen);
+      if (label) label.textContent = el.getAttribute(isOpen ? 'data-open-label' : 'data-closed-label');
+      if (time) time.textContent = parts.hour + ':' + parts.minute;
+      if (status) status.hidden = open === null || close === null;
+      if (clock) clock.hidden = false;
+    }
+
+    tick();
+    setInterval(tick, 30000);
+  }
+
+  /* ---------- Contact: copy email / phone ---------- */
+  document.addEventListener('click', function (event) {
+    var button = event.target.closest('[data-copy]');
+    if (!button) return;
+    var value = button.getAttribute('data-copy');
+    var labelEl = button.querySelector('[data-copy-label]');
+    var original = labelEl ? labelEl.textContent : '';
+
+    function done() {
+      button.classList.add('is-copied');
+      if (labelEl) labelEl.textContent = button.getAttribute('data-copied-label');
+      if (soundOn) playKey('tactile');
+      clearTimeout(button._t);
+      button._t = setTimeout(function () {
+        button.classList.remove('is-copied');
+        if (labelEl) labelEl.textContent = original;
+      }, 1800);
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(value).then(done, function () {});
+    } else {
+      var area = document.createElement('textarea');
+      area.value = value;
+      area.setAttribute('readonly', '');
+      area.style.position = 'fixed';
+      area.style.opacity = '0';
+      document.body.appendChild(area);
+      area.select();
+      try {
+        document.execCommand('copy');
+        done();
+      } catch (e) {}
+      area.remove();
+    }
+  });
+
+  /* ---------- Contact: message character counter ---------- */
+  function initCounter(scope) {
+    scope.querySelectorAll('[data-count-source]').forEach(function (area) {
+      var counter = area.closest('form').querySelector('[data-count]');
+      if (!counter) return;
+      var max = Number(area.getAttribute('maxlength')) || 1000;
+      function update() {
+        counter.textContent = area.value.length + ' / ' + max;
+        counter.classList.toggle('is-near', area.value.length > max * 0.9);
+      }
+      area.addEventListener('input', update);
+      update();
+    });
+  }
+
   function initDetails(scope) {
     scope.querySelectorAll('[data-hero-keyboard]').forEach(initHeroKeyboard);
     initCurves(scope);
     initMiniBoards(scope);
+    scope.querySelectorAll('[data-hours]').forEach(initHours);
+    initCounter(scope);
     scope.querySelectorAll('[data-sound-toggle]').forEach(function (b) {
       b.setAttribute('aria-pressed', soundOn ? 'true' : 'false');
     });

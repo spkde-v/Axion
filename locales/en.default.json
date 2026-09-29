@@ -148,5 +148,27 @@
   },
   "testimonials": {
     "rating": "Rated {{ rating }} out of 5"
+  },
+  "contact": {
+    "topic": "What's it about?",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "order": "Order number",
+    "optional": "optional",
+    "message": "Message",
+    "send": "Send message",
+    "error": "Please check the form:",
+    "success_title": "Message sent — thanks!",
+    "success_text": "It's in the workshop inbox. We'll reply to your email soon, usually within a few hours on workdays.",
+    "open_map": "Open in Maps",
+    "visit": "Visit the workshop",
+    "hours": "Opening hours",
+    "open_now": "Open now · until {{ time }}",
+    "closed_now": "Closed right now",
+    "local_time": "Our time",
+    "copy": "Copy",
+    "copied": "Copied",
+    "faq_eyebrow": "Before you write"
   }
 }
