@@ -382,9 +382,119 @@
     }
   }
 
-  @media (max-width: 600px) {
+  /* Phones: heading first, a big cropped keyboard, full-width buttons and a swipeable spec strip. */
+  @media (max-width: 749px) {
+    .hero__card {
+      gap: 0;
+      padding: 1.5rem 1.25rem 1.25rem;
+    }
+
+    .hero__card::before {
+      display: none;
+    }
+
+    .hero__content {
+      display: contents;
+    }
+
+    .hero .eyebrow {
+      order: 1;
+      justify-self: start;
+      margin-bottom: 0.9rem;
+    }
+
+    .hero__title {
+      order: 2;
+      max-width: none;
+      font-size: clamp(2.2rem, 1.2rem + 5vw, 2.7rem);
+    }
+
+    .hero__media {
+      order: 3;
+      margin: 0.75rem -1.25rem 0.25rem;
+      overflow: hidden;
+    }
+
+    .hero__illo svg {
+      width: 108%;
+      max-width: none;
+      margin-left: -4%;
+    }
+
+    .hero__text {
+      order: 4;
+      margin-top: 0;
+      font-size: 1rem;
+    }
+
+    .hero__actions {
+      order: 5;
+      display: grid;
+      gap: 0.6rem;
+      margin-top: 1.5rem;
+    }
+
+    .hero__actions .btn {
+      width: 100%;
+      min-height: 3.25rem;
+      font-size: 1rem;
+    }
+
+    .hero__status {
+      order: 6;
+      align-items: flex-start;
+      margin-top: 1.1rem;
+      font-size: 0.8rem;
+    }
+
+    .hero__status-dot {
+      flex: none;
+      margin-top: 0.4em;
+    }
+
+    /* On touch screens there is no keyboard to type on: keep only the sound key, tucked in the corner. */
+    .typer {
+      position: absolute;
+      bottom: 0.5rem;
+      left: 1.25rem;
+      margin: 0;
+    }
+
+    .typer__screen {
+      display: none;
+    }
+
+    .typer__sound {
+      width: 2.5rem;
+      height: 2.5rem;
+    }
+
     .hero__specs {
-      grid-template-columns: 1fr 1fr;
+      order: 7;
+      display: flex;
+      gap: 0.5rem;
+      margin: 1.5rem -1.25rem 0;
+      padding: 0 1.25rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: 1.25rem;
+      scrollbar-width: none;
+      mask-image: linear-gradient(90deg, transparent 0, #000 1.25rem, #000 calc(100% - 2rem), transparent);
+    }
+
+    .hero__specs::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hero__specs > div {
+      flex: 0 0 41%;
+      padding: 0.75rem 0.9rem;
+      scroll-snap-align: start;
+    }
+
+    .hero__specs dt {
+      font-size: 0.66rem;
+      line-height: 1.35;
     }
 
     .hero__specs dd {
