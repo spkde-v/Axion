@@ -319,6 +319,7 @@
 
   .swatch input:checked + span {
     background: var(--color-secondary);
+    color: var(--color-on-secondary);
     box-shadow: var(--shadow-key);
   }
 
@@ -360,6 +361,12 @@
 
   .builder-card:hover {
     background: var(--color-tertiary);
+    color: var(--color-on-secondary);
+  }
+
+  .builder-card:hover small {
+    color: inherit;
+    opacity: 0.85;
   }
 
   .builder-card > span:nth-child(2) {

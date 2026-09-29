@@ -255,7 +255,7 @@
         var text = k.label.replace(/&/g, '&amp;').replace(/</g, '&lt;');
         out.push(
           '<text x="' + (kx + 11) + '" y="' + (ky + 17) + '" font-size="' + (text.length > 2 ? 9 : 11) +
-            '" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" fill="' + shade(c, 0.55) + '">' + text + '</text>'
+            '" font-family="DM Sans, system-ui, sans-serif" font-weight="500" fill="' + shade(c, 0.55) + '">' + text + '</text>'
         );
       }
       out.push('</g>');

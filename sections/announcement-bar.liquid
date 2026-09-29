@@ -1,5 +1,5 @@
 {%- if section.settings.text != blank -%}
-  <div class="announcement full-width" style="--bar-bg: {{ section.settings.background }};">
+  <div class="announcement full-width" style="--bar-bg: {{ section.settings.background }}; --bar-fg: {{ section.settings.text_color }};">
     <p class="announcement__text">
       {%- if section.settings.link != blank -%}
         <a href="{{ section.settings.link }}">{{ section.settings.text }}</a>
@@ -13,6 +13,7 @@
 {% stylesheet %}
   .announcement {
     background: var(--bar-bg, var(--color-secondary));
+    color: var(--bar-fg, var(--color-on-secondary));
     padding: 0.55rem var(--page-margin);
     text-align: center;
     font-size: 0.85rem;
@@ -48,6 +49,12 @@
       "id": "background",
       "label": "t:labels.background",
       "default": "#A8BBA3"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "t:labels.foreground",
+      "default": "#FFFFFF"
     }
   ],
   "enabled_on": {

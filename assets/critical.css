@@ -86,7 +86,8 @@ p:empty {
 
 :root {
   --icon-stroke-width: 1.6;
-  --font-mono: ui-monospace, 'SFMono-Regular', 'JetBrains Mono', Menlo, Consolas, monospace;
+  --font-label: var(--font-primary--family);
+  --color-on-secondary: #ffffff;
 }
 
 /* ---------- Base ---------- */
@@ -261,8 +262,8 @@ a {
   padding: 0.3rem 0.7rem 0.28rem;
   border-radius: 3px;
   background: var(--tape);
-  color: var(--color-background);
-  font-family: var(--font-mono);
+  color: #fff;
+  font-family: var(--font-label);
   font-size: 0.7rem;
   font-weight: 600;
   letter-spacing: 0.16em;
@@ -285,15 +286,16 @@ a {
 .section-index {
   display: block;
   margin-bottom: 0.5rem;
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.75rem;
   letter-spacing: 0.08em;
   color: var(--color-muted);
 }
 
 .mono {
-  font-family: var(--font-mono);
-  letter-spacing: 0.02em;
+  font-family: var(--font-label);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.01em;
 }
 
 /* Tiny keycap used for keyboard shortcut hints. */
@@ -307,7 +309,7 @@ kbd {
   border-radius: 0.35em;
   background: var(--color-surface);
   color: var(--color-foreground);
-  font-family: var(--font-mono);
+  font-family: var(--font-label);
   font-size: 0.78em;
   font-weight: 600;
   line-height: 1;
@@ -373,6 +375,7 @@ kbd {
 
 .btn--secondary {
   --btn-bg: var(--color-secondary);
+  --btn-fg: var(--color-on-secondary);
 }
 
 .btn--light {
@@ -429,6 +432,7 @@ kbd {
 
 .pill--olive {
   background: var(--color-secondary);
+  color: var(--color-on-secondary);
 }
 
 .pill--outline {
