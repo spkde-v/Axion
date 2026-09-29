@@ -31,6 +31,10 @@ Setup:
 Until collections are connected, the builder runs in demo mode with sample parts (checkout disabled).
 Selections are kept in the URL (`?base=…&switch=…&caps=…`), so a build can be shared as a link.
 
+## Demo catalogue
+
+`scripts/store-seed/` creates products, collections, pages, menus, journal articles and policies through the Admin API, with product images drawn in the theme's style. See `scripts/store-seed/README.md`.
+
 ## Contact page
 
 Create a page (e.g. `contact`) and assign the **page.contact** template. The `contact` section has:

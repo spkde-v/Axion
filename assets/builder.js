@@ -167,7 +167,7 @@
               .map(function (v, vi) {
                 return (
                   '<option value="' + vi + '"' + (vi === (i === selected.index ? selected.variant : 0) ? ' selected' : '') +
-                  (v.available ? '' : ' disabled') + '>' + escapeHtml(v.title) + ' — ' + self.money(v.price) + '</option>'
+                  (v.available ? '' : ' disabled') + '>' + escapeHtml(v.title) + '</option>'
                 );
               })
               .join('') +

@@ -246,7 +246,7 @@ a {
   max-width: 40rem;
 }
 
-.section-head__text p {
+.section-head__text p:not(.eyebrow) {
   margin-top: 0.6rem;
   color: var(--color-muted);
 }
@@ -269,7 +269,7 @@ a {
   letter-spacing: 0.16em;
   line-height: 1.4;
   text-transform: uppercase;
-  text-shadow: 0 1px 0 rgb(0 0 0 / 0.35), 0 -1px 0 rgb(255 255 255 / 0.12);
+  text-shadow: 0 1px 0 rgb(0 0 0 / 0.25);
   transform: rotate(-1.2deg);
   box-shadow: 0 1px 1px rgb(0 0 0 / 0.12), inset 0 1px 0 rgb(255 255 255 / 0.08);
 }
@@ -628,7 +628,7 @@ kbd {
   padding-block: clamp(2rem, 1.5rem + 2.5vw, 3.5rem) clamp(1.5rem, 1rem + 1.5vw, 2.5rem);
 }
 
-.page-header p {
+.page-header p:not(.eyebrow) {
   margin-top: 0.75rem;
   max-width: 42rem;
   color: var(--color-muted);

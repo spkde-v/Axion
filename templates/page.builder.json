@@ -11,7 +11,14 @@
   "sections": {
     "main": {
       "type": "keyboard-builder",
-      "settings": {}
+      "settings": {
+        "keyboards": "keyboards",
+        "switches": "switches",
+        "keycaps": "keycaps",
+        "assembly_product": "assembly-and-lubing",
+        "switch_quantity": "per_pack",
+        "switch_pack_size": 70
+      }
     },
     "switches": {
       "type": "switch-guide",
@@ -25,7 +32,8 @@
             "text": "No bump, no click. Quiet, fast and great for gaming.",
             "force": "45 gf",
             "travel": "4.0 mm",
-            "sound_word": "thock"
+            "sound_word": "thock",
+            "collection": "linear-switches"
           }
         },
         "sw-2": {
@@ -37,7 +45,8 @@
             "text": "A soft bump tells you the key registered. Loved by writers.",
             "force": "62 gf",
             "travel": "4.0 mm",
-            "sound_word": "thud"
+            "sound_word": "thud",
+            "collection": "tactile-switches"
           }
         },
         "sw-3": {
@@ -49,7 +58,8 @@
             "text": "Bump plus an audible click. Old-school typewriter energy.",
             "force": "55 gf",
             "travel": "3.8 mm",
-            "sound_word": "click"
+            "sound_word": "click",
+            "collection": "clicky-switches"
           }
         }
       },
